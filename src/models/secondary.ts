@@ -6,7 +6,7 @@ export interface Secondary {
   rules?: string;
 }
 
-type SecondaryType =
+export type SecondaryType =
   | "Purge The Enemy"
   | "No Mercy, No Respite"
   | "Warpcraft"
