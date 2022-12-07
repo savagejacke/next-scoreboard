@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 
 const Home: NextPage = () => {
   return (
-    <div className="flex flex-col justify-center">
+    <div className="flex flex-col items-center p-8">
       <div className="flex-row">
         <h1 className="text-4xl font-bold">Warhammer Scoreboard</h1>
       </div>
