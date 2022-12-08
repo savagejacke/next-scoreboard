@@ -19,11 +19,11 @@ export const useGameStore = create<GameState>((set) => ({
   updatePrimaryScore: (primaryScore: number, player: PlayerChange) => {
     if (player === "player1") {
       set((state) => ({
-        player1: { ...state.player1, score: primaryScore },
+        player1: { ...state.player1, primaryScore },
       }));
     } else {
       set((state) => ({
-        player2: { ...state.player2, score: primaryScore },
+        player2: { ...state.player2, primaryScore },
       }));
     }
   },
@@ -58,7 +58,6 @@ export const useGameStore = create<GameState>((set) => ({
         },
       }));
     } else {
-      console.log(newSecondary);
       set((state) => ({
         player2: {
           ...state.player2,

@@ -13,9 +13,12 @@ const Nav: React.FC = () => {
         >
           40k 9th Edition
         </Link>
-        <button className="mx-4 my-2 text-xl hover:font-semibold">
+        <Link
+          href="/scoreboard"
+          className="mx-4 my-2 text-xl hover:font-semibold"
+        >
           Scoreboard
-        </button>
+        </Link>
         <button className="mx-4 my-2 text-xl hover:font-semibold">
           Results
         </button>
