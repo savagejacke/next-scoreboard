@@ -233,7 +233,7 @@ const ContinueButton: React.FC = () => {
     return true;
   };
 
-  if (!p1Ready() && !p2Ready())
+  if (!p1Ready() || !p2Ready())
     return (
       <button
         className="btn rounded bg-green-500 px-4 py-2 font-bold text-white opacity-75 hover:bg-green-600"

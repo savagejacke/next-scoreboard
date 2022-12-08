@@ -58,10 +58,11 @@ export const useGameStore = create<GameState>((set) => ({
         },
       }));
     } else {
+      console.log(newSecondary);
       set((state) => ({
         player2: {
           ...state.player2,
-          secondaries: [...state.player2.secondaries],
+          secondaries: [...state.player2.secondaries, newSecondary],
         },
       }));
     }
