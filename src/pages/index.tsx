@@ -1,4 +1,5 @@
 import { type NextPage } from "next";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   return (
@@ -7,9 +8,12 @@ const Home: NextPage = () => {
         <h1 className="text-4xl font-bold">Warhammer Scoreboard</h1>
       </div>
       <div className="mt-3 flex-row">
-        <button className="mr-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
+        <Link
+          href="/ninth-start"
+          className="mr-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+        >
           Start Game
-        </button>
+        </Link>
         <button className="rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-600">
           Scoreboard
         </button>

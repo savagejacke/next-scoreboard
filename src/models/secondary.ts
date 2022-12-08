@@ -6,9 +6,12 @@ export interface Secondary {
   rules?: string;
 }
 
-export type SecondaryType =
-  | "Purge The Enemy"
-  | "No Mercy, No Respite"
-  | "Warpcraft"
-  | "Battlefield Supremacy"
-  | "Shadow Operations";
+export const SECONDARY_TYPES = [
+  "Purge The Enemy",
+  "No Mercy, No Respite",
+  "Warpcraft",
+  "Battlefield Supremacy",
+  "Shadow Operations",
+] as const;
+
+export type SecondaryType = typeof SECONDARY_TYPES[number];
