@@ -28,12 +28,11 @@ const Scoreboard: React.FC<{ playerNumber: PlayerChange }> = ({
       <h2 className="text-center text-4xl font-bold">
         {player.name} - {score}
       </h2>
-      <div className="grid-rows-7">
+      <div className="flex basis-1/5 flex-row">
         <PrimaryCols playerNumber={playerNumber} />
-        <div />
-        <div />
-        <div />
-        <div />
+        <div className="border border-black"></div>
+        <div className="border border-black" />
+        <div className="border border-black" />
       </div>
     </div>
   );
@@ -52,39 +51,75 @@ const PrimaryCols: React.FC<{ playerNumber: PlayerChange }> = ({
   const update = usePrimaryScore(updatePrimaryScore, playerNumber);
 
   return (
-    <div className="col-span-1">
-      <div className="border border-gray-400 text-center">
-        <h3 className="text-center font-semibold">Primary</h3>
+    <>
+      <div className="flex flex-col">
+        <div className="border border-gray-400 text-center">
+          <h3 className="text-center font-semibold">Primary</h3>
+        </div>
+        <div className="flex flex-col">
+          <input
+            type="number"
+            placeholder="-"
+            disabled
+            className="border border-gray-400 bg-gray-100 text-center"
+          />
+          <input
+            type="number"
+            className="border border-gray-400 bg-white text-center"
+            onChange={(e) => update(+e.target.value, 2, "Basic")}
+          />
+          <input
+            type="number"
+            className="border border-gray-400 bg-white text-center"
+            onChange={(e) => update(+e.target.value, 3, "Basic")}
+          />
+          <input
+            type="number"
+            className="border border-gray-400 bg-white text-center"
+            onChange={(e) => update(+e.target.value, 4, "Basic")}
+          />
+          <input
+            type="number"
+            className="border border-gray-400 bg-white text-center"
+            onChange={(e) => update(+e.target.value, 5, "Basic")}
+          />
+        </div>
+        <div className="border border-gray-400 text-center">{score}</div>
       </div>
-      <div>
-        <input
-          type="number"
-          placeholder="-"
-          disabled
-          className="border border-gray-400 bg-gray-100 text-center"
-        />
-        <input
-          type="number"
-          className="border border-gray-400 bg-white text-center"
-          onChange={(e) => update(+e.target.value, 2)}
-        />
-        <input
-          type="number"
-          className="border border-gray-400 bg-white text-center"
-          onChange={(e) => update(+e.target.value, 3)}
-        />
-        <input
-          type="number"
-          className="border border-gray-400 bg-white text-center"
-          onChange={(e) => update(+e.target.value, 4)}
-        />
-        <input
-          type="number"
-          className="border border-gray-400 bg-white text-center"
-          onChange={(e) => update(+e.target.value, 5)}
-        />
+      <div className="flex flex-col">
+        <div className="border border-gray-400 text-center">
+          <h3 className="font-semibold">Additional Primary</h3>
+        </div>
+        <div className="flex flex-col">
+          <input
+            type="number"
+            placeholder="-"
+            disabled
+            className="border border-gray-400 bg-gray-100 text-center"
+          />
+          <input
+            type="number"
+            className="border border-gray-400 bg-white text-center"
+            onChange={(e) => update(+e.target.value, 2, "Additional")}
+          />
+          <input
+            type="number"
+            className="border border-gray-400 bg-white text-center"
+            onChange={(e) => update(+e.target.value, 3, "Additional")}
+          />
+          <input
+            type="number"
+            className="border border-gray-400 bg-white text-center"
+            onChange={(e) => update(+e.target.value, 4, "Additional")}
+          />
+          <input
+            type="number"
+            className="border border-gray-400 bg-white text-center"
+            onChange={(e) => update(+e.target.value, 5, "Additional")}
+          />
+          <div className="border border-gray-400 text-center">-</div>
+        </div>
       </div>
-      <div className="border border-gray-400 text-center">{score}</div>
-    </div>
+    </>
   );
 };
