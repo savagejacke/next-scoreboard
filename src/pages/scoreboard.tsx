@@ -1,3 +1,4 @@
+import { useActionScore } from "@/hooks/useActionScore";
 import { usePrimaryScore } from "@/hooks/usePrimaryScore";
 import { useSecondaryScore } from "@/hooks/useSecondaryScore";
 import { type PlayerChange, useGameStore } from "@/zustand/zustand";
@@ -29,7 +30,7 @@ const Scoreboard: React.FC<{ playerNumber: PlayerChange }> = ({
       <h2 className="text-center text-4xl font-bold">
         {player.name} - {score}
       </h2>
-      <div className="flex basis-1/5 flex-row">
+      <div className="flex basis-1/5 flex-row py-4">
         <PrimaryCols playerNumber={playerNumber} />
         <SecondaryCol idx={0} player={playerNumber} />
         <SecondaryCol idx={1} player={playerNumber} />
@@ -136,9 +137,15 @@ const SecondaryCol: React.FC<{ idx: number; player: PlayerChange }> = ({
   );
   const update = useSecondaryScore(idx, player);
 
+  if (
+    secondary?.title === "Warp Ritual" ||
+    secondary?.title === "Retrieve Nephilim Data"
+  )
+    return <ActionSecondaryCol idx={idx} playerNumber={player} />;
+
   return (
     <div className="flex flex-col">
-      <div className="border border-gray-400 text-center">
+      <div className="border border-gray-400 px-1 text-center">
         <h3 className="font-semibold">{secondary?.title}</h3>
       </div>
       <div className="flex flex-col">
@@ -170,6 +177,98 @@ const SecondaryCol: React.FC<{ idx: number; player: PlayerChange }> = ({
         <div className="border border-gray-400 text-center">
           {secondary?.score}
         </div>
+      </div>
+    </div>
+  );
+};
+
+const ActionSecondaryCol: React.FC<{
+  idx: number;
+  playerNumber: PlayerChange;
+}> = ({ idx, playerNumber }) => {
+  const player = useGameStore((state) =>
+    playerNumber === "player1" ? state.player1 : state.player2
+  );
+  const secondary = player.secondaries[idx];
+  const update = useActionScore(idx, playerNumber);
+
+  return (
+    <div className="flex flex-col">
+      <div className="border border-gray-400 px-1 text-center">
+        <h3 className="font-semibold">{secondary?.title}</h3>
+      </div>
+      <div className="flex justify-around border border-gray-400 bg-white text-center">
+        <label
+          htmlFor={`turn1${player.name}-${secondary?.title}`}
+          className="ml-1"
+        >
+          Action Completed
+        </label>
+        <input
+          type="checkbox"
+          id={`turn1${player.name}-${secondary?.title}`}
+          onChange={() => update(1)}
+          className="mx-1"
+        />
+      </div>
+      <div className="flex justify-around border border-gray-400 bg-white text-center">
+        <label
+          htmlFor={`turn2${player.name}-${secondary?.title}`}
+          className="ml-1"
+        >
+          Action Completed
+        </label>
+        <input
+          type="checkbox"
+          id={`turn2${player.name}-${secondary?.title}`}
+          onChange={() => update(2)}
+          className="mx-1"
+        />
+      </div>
+      <div className="flex justify-around border border-gray-400 bg-white text-center">
+        <label
+          htmlFor={`turn3${player.name}-${secondary?.title}`}
+          className="ml-1"
+        >
+          Action Completed
+        </label>
+        <input
+          type="checkbox"
+          id={`turn3${player.name}-${secondary?.title}`}
+          onChange={() => update(3)}
+          className="mx-1"
+        />
+      </div>
+      <div className="flex justify-around border border-gray-400 bg-white text-center">
+        <label
+          htmlFor={`turn4${player.name}-${secondary?.title}`}
+          className="ml-1"
+        >
+          Action Completed
+        </label>
+        <input
+          type="checkbox"
+          id={`turn4${player.name}-${secondary?.title}`}
+          onChange={() => update(4)}
+          className="mx-1"
+        />
+      </div>
+      <div className="flex justify-around border border-gray-400 bg-white text-center">
+        <label
+          htmlFor={`turn5${player.name}-${secondary?.title}`}
+          className="ml-1"
+        >
+          Action Completed
+        </label>
+        <input
+          type="checkbox"
+          id={`turn5${player.name}-${secondary?.title}`}
+          onChange={() => update(5)}
+          className="mx-1"
+        />
+      </div>
+      <div className="border border-gray-400 text-center">
+        {secondary?.score}
       </div>
     </div>
   );
