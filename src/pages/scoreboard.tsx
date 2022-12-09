@@ -1,4 +1,5 @@
 import { usePrimaryScore } from "@/hooks/usePrimaryScore";
+import { useSecondaryScore } from "@/hooks/useSecondaryScore";
 import { type PlayerChange, useGameStore } from "@/zustand/zustand";
 import { type NextPage } from "next";
 
@@ -30,9 +31,9 @@ const Scoreboard: React.FC<{ playerNumber: PlayerChange }> = ({
       </h2>
       <div className="flex basis-1/5 flex-row">
         <PrimaryCols playerNumber={playerNumber} />
-        <div className="border border-black"></div>
-        <div className="border border-black" />
-        <div className="border border-black" />
+        <SecondaryCol idx={0} player={playerNumber} />
+        <SecondaryCol idx={1} player={playerNumber} />
+        <SecondaryCol idx={2} player={playerNumber} />
       </div>
     </div>
   );
@@ -121,5 +122,55 @@ const PrimaryCols: React.FC<{ playerNumber: PlayerChange }> = ({
         </div>
       </div>
     </>
+  );
+};
+
+const SecondaryCol: React.FC<{ idx: number; player: PlayerChange }> = ({
+  idx,
+  player,
+}) => {
+  const secondary = useGameStore((state) =>
+    player === "player1"
+      ? state.player1.secondaries[idx]
+      : state.player2.secondaries[idx]
+  );
+  const update = useSecondaryScore(idx, player);
+
+  return (
+    <div className="flex flex-col">
+      <div className="border border-gray-400 text-center">
+        <h3 className="font-semibold">{secondary?.title}</h3>
+      </div>
+      <div className="flex flex-col">
+        <input
+          type="number"
+          className="border border-gray-400 bg-white text-center"
+          onChange={(e) => update(+e.target.value, 1)}
+        />
+        <input
+          type="number"
+          className="border border-gray-400 bg-white text-center"
+          onChange={(e) => update(+e.target.value, 2)}
+        />
+        <input
+          type="number"
+          className="border border-gray-400 bg-white text-center"
+          onChange={(e) => update(+e.target.value, 3)}
+        />
+        <input
+          type="number"
+          className="border border-gray-400 bg-white text-center"
+          onChange={(e) => update(+e.target.value, 4)}
+        />
+        <input
+          type="number"
+          className="border border-gray-400 bg-white text-center"
+          onChange={(e) => update(+e.target.value, 5)}
+        />
+        <div className="border border-gray-400 text-center">
+          {secondary?.score}
+        </div>
+      </div>
+    </div>
   );
 };
