@@ -6,7 +6,7 @@ import { type NextPage } from "next";
 
 const ScoreboardPage: NextPage = () => {
   return (
-    <div className="flex flex-row justify-evenly">
+    <div className="flex flex-col items-center">
       <Scoreboard playerNumber="player1" />
       <Scoreboard playerNumber="player2" />
     </div>
@@ -146,7 +146,7 @@ const SecondaryCol: React.FC<{ idx: number; player: PlayerChange }> = ({
   return (
     <div className="flex flex-col">
       <div className="border border-gray-400 px-1 text-center">
-        <h3 className="font-semibold">{secondary?.title}</h3>
+        <h3 className="font-semibold">{secondary?.title ?? "N/A"}</h3>
       </div>
       <div className="flex flex-col">
         <input
@@ -175,7 +175,7 @@ const SecondaryCol: React.FC<{ idx: number; player: PlayerChange }> = ({
           onChange={(e) => update(+e.target.value, 5)}
         />
         <div className="border border-gray-400 text-center">
-          {secondary?.score}
+          {secondary?.score ?? 0}
         </div>
       </div>
     </div>
@@ -268,7 +268,7 @@ const ActionSecondaryCol: React.FC<{
         />
       </div>
       <div className="border border-gray-400 text-center">
-        {secondary?.score}
+        {secondary?.score ?? 0}
       </div>
     </div>
   );

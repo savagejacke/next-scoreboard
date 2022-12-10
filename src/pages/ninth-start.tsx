@@ -1,4 +1,4 @@
-import { ARMIES, type Army } from "@/data/armies";
+import { ARMIES, CHAPTERS, LEGIONS } from "@/data/armies";
 import { SECONDARIES } from "@/data/Secondaries";
 import type { Secondary, SecondaryType } from "@/models/secondary";
 import { useGameStore, type PlayerChange } from "@/zustand/zustand";
@@ -50,13 +50,14 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
 
   const availableArmy = (secondary: Secondary) =>
     secondary.armyRequirement === "None" ||
-    secondary.armyRequirement === player.army;
+    player.army.includes(secondary.armyRequirement);
 
   const disableSecondary = (type: SecondaryType): boolean => {
     if (player.secondaries.length < 3) return false;
     return player.secondaries.find((sec) => sec.type === type) ? false : true;
   };
 
+  //#region options
   const armyOptions = ARMIES.map((army) => (
     <option key={army} value={army}>
       {army}
@@ -102,6 +103,53 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       {sec.title}
     </option>
   ));
+  //#endregion
+
+  const onChapterChange = (chapter: string) => {
+    if (!CHAPTERS.includes(chapter))
+      actions.updateArmy("Space Marines", playerNumber);
+    else actions.updateArmy(`Space Marines-${chapter}`, playerNumber);
+  };
+
+  const chapterSelect = player.army.includes("Space Marines") ? (
+    <div className="text-center">
+      <h2 className="text-2xl font-bold">Select Chapter</h2>
+      <select
+        onChange={(e) => onChapterChange(e.target.value)}
+        className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
+      >
+        <option value="--">--</option>
+        {CHAPTERS.map((chap) => (
+          <option value={chap} key={chap}>
+            {chap}
+          </option>
+        ))}
+      </select>
+    </div>
+  ) : null;
+
+  const onLegionChange = (legion: string) => {
+    if (!LEGIONS.includes(legion))
+      actions.updateArmy("Chaos Marines", playerNumber);
+    else actions.updateArmy(`Chaos Marines-${legion}`, playerNumber);
+  };
+
+  const legionSelect = player.army.includes("Chaos Marines") ? (
+    <div className="text-center">
+      <h2 className="text-2xl font-bold">Select Legion</h2>
+      <select
+        onChange={(e) => onLegionChange(e.target.value)}
+        className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
+      >
+        <option value="--">--</option>
+        {LEGIONS.map((legion) => (
+          <option value={legion} key={legion}>
+            {legion}
+          </option>
+        ))}
+      </select>
+    </div>
+  ) : null;
 
   if (!player.name)
     return (
@@ -121,7 +169,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       </div>
     );
   return (
-    <div className="max-w-1/2 flex flex-col items-center p-4">
+    <div className="flex w-1/2 flex-col items-center p-4">
       <h1 className="mb-4 flex-row text-4xl font-bold">{player.name}</h1>
       <label
         className="flex-row text-2xl font-bold"
@@ -132,13 +180,13 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       <select
         className="ml-1 mb-2 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
         id={`${player.name}-army`}
-        onChange={(e) =>
-          actions.updateArmy(e.target.value as Army, playerNumber)
-        }
+        onChange={(e) => actions.updateArmy(e.target.value, playerNumber)}
       >
         <option value="None">--</option>
         {armyOptions}
       </select>
+      {chapterSelect}
+      {legionSelect}
       <h2 className="mt-2 mb-1 flex-row text-2xl font-bold">
         Select Secondaries:
       </h2>

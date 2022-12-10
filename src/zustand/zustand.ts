@@ -1,4 +1,3 @@
-import { type Army } from "@/data/armies";
 import { type Player } from "@/models/player";
 import type { SecondaryType, Secondary } from "@/models/secondary";
 import create from "zustand";
@@ -38,7 +37,7 @@ export const useGameStore = create<GameState>((set) => ({
       }));
     }
   },
-  updateArmy: (army: Army, player: PlayerChange) => {
+  updateArmy: (army: string, player: PlayerChange) => {
     if (player === "player1") {
       set((state) => ({
         player1: { ...state.player1, army },
@@ -152,7 +151,7 @@ interface GameState {
   player2: Player;
   updatePrimaryScore: (primaryScore: number, player: PlayerChange) => void;
   updateName: (name: string, player: PlayerChange) => void;
-  updateArmy: (army: Army, player: PlayerChange) => void;
+  updateArmy: (army: string, player: PlayerChange) => void;
   addSecondary: (newSecondary: Secondary, player: PlayerChange) => void;
   replaceSecondary: (newSecondary: Secondary, player: PlayerChange) => void;
   removeSecondary: (type: SecondaryType, player: PlayerChange) => void;

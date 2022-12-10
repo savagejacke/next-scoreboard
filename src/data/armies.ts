@@ -47,5 +47,3 @@ export const LEGIONS = [
   "Red Corsairs",
   "Creations of Bile",
 ];
-
-export type Army = typeof ARMIES[number] | "None";
