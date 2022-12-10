@@ -14,10 +14,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model GameResult {
+  id             String   @id @default(cuid())
+  gameType       String
+  player1Name    String
+  player1Army    String
+  player1Score   Int
+  player2Name    String
+  player2Army    String
+  player2Score   Int
+  numberOfRounds Int
+  description    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 // Necessary for Next auth
