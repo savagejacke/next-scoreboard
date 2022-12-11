@@ -1,14 +1,18 @@
 import { useActionScore } from "@/hooks/useActionScore";
 import { usePrimaryScore } from "@/hooks/usePrimaryScore";
 import { useSecondaryScore } from "@/hooks/useSecondaryScore";
+import { trpc } from "@/utils/trpc";
 import { type PlayerChange, useGameStore } from "@/zustand/zustand";
 import { type NextPage } from "next";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 const ScoreboardPage: NextPage = () => {
   return (
     <div className="flex flex-col items-center">
       <Scoreboard playerNumber="player1" />
       <Scoreboard playerNumber="player2" />
+      <GameLogger />
     </div>
   );
 };
@@ -270,6 +274,86 @@ const ActionSecondaryCol: React.FC<{
       <div className="border border-gray-400 text-center">
         {secondary?.score ?? 0}
       </div>
+    </div>
+  );
+};
+
+const GameLogger: React.FC = () => {
+  const { player1, player2 } = useGameStore((state) => ({
+    player1: state.player1,
+    player2: state.player2,
+  }));
+  const { mutateAsync } = trpc.game.logGame.useMutation();
+  const router = useRouter();
+  const [numberOfRounds, setNumberOfRounds] = useState(1);
+  const [description, setDescription] = useState("");
+
+  const logGame = async () => {
+    const player1Score =
+      player1.primaryScore +
+      player1.secondaries.reduce((val, sec) => val + sec.score, 0);
+    const player2Score =
+      player2.primaryScore +
+      player2.secondaries.reduce((val, sec) => val + sec.score, 0);
+
+    const p1LogArmy =
+      player1.army.includes("Space Marines") ||
+      player1.army.includes("Chaos Marines")
+        ? player1.army.substring(14)
+        : player1.army;
+
+    const p2LogArmy =
+      player2.army.includes("Space Marines") ||
+      player2.army.includes("Chaos Marines")
+        ? player2.army.substring(14)
+        : player2.army;
+
+    await mutateAsync({
+      gameType: "40k 9th Edition",
+      player1: {
+        name: player1.name,
+        army: p1LogArmy,
+        score: player1Score,
+      },
+      player2: {
+        name: player2.name,
+        army: p2LogArmy,
+        score: player2Score,
+      },
+      numberOfRounds,
+      description,
+    });
+    router.push("/results");
+  };
+
+  const describe = "Enter a description for your game if you wish";
+
+  return (
+    <div className="flex flex-col items-center">
+      <label htmlFor="number-of-rounds" className="mb-1">
+        How many rounds did you play?
+      </label>
+      <input
+        type="number"
+        max={5}
+        id="number-of-rounds"
+        onChange={(e) => setNumberOfRounds(+e.target.value)}
+        value={numberOfRounds}
+        className="rounded-md border border-black bg-white text-center"
+      />
+      <textarea
+        cols={50}
+        rows={3}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder={describe}
+        className="my-4 rounded-md border border-black bg-white p-1"
+      />
+      <button
+        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+        onClick={logGame}
+      >
+        Log game
+      </button>
     </div>
   );
 };
