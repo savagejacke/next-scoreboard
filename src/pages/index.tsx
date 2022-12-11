@@ -1,20 +1,25 @@
 import { type NextPage } from "next";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col items-center p-8">
       <div className="flex-row">
         <h1 className="text-4xl font-bold">Warhammer Scoreboard</h1>
       </div>
       <div className="mt-3 flex-row">
-        <Link
-          href="/ninth-start"
+        <button
+          onClick={() => router.push("/ninth-start")}
           className="mr-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
         >
           Start Game
-        </Link>
-        <button className="rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-600">
+        </button>
+        <button
+          className="rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-600"
+          onClick={() => router.push("/scoreboard")}
+        >
           Scoreboard
         </button>
       </div>
