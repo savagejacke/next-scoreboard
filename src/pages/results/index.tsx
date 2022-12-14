@@ -39,6 +39,9 @@ const ResultsPage: NextPage = () => {
           {result.player1Score === result.player2Score ? "Tie" : winner}
         </td>
         <td className="border border-gray-400 px-1 text-center">
+          {result.numberOfRounds}
+        </td>
+        <td className="border border-gray-400 px-1 text-center">
           {result.description}
         </td>
       </tr>
@@ -81,6 +84,9 @@ const ResultsPage: NextPage = () => {
             </th>
             <th className="border border-gray-400 px-1 text-center font-bold">
               Winner
+            </th>
+            <th className="border border-gray-400 px-1 text-center font-bold">
+              Rounds
             </th>
             <th className="border border-gray-400 px-1 text-center font-bold">
               Description
