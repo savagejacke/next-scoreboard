@@ -1,12 +1,22 @@
 import { trpc } from "@/utils/trpc";
 import { type NextPage } from "next";
+import { useSession } from "next-auth/react";
 
 const ResultsPage: NextPage = () => {
-  const resultsQuery = trpc.game.getResultsByType.useQuery({
+  const session = useSession();
+
+  const allResultsQuery = trpc.game.getResultsByType.useQuery({
     type: "40k 9th Edition",
   });
 
-  const results = resultsQuery.data?.map((result) => {
+  const userResultsQuery = trpc.game.getUserResults.useQuery();
+
+  const data =
+    session.status === "authenticated"
+      ? userResultsQuery?.data?.games
+      : allResultsQuery.data;
+
+  const allResults = data?.map((result) => {
     const winner =
       result.player1Score > result.player2Score
         ? result.player1Name
@@ -48,7 +58,7 @@ const ResultsPage: NextPage = () => {
     );
   });
 
-  if (resultsQuery.isFetching)
+  if (allResultsQuery.isFetching)
     return (
       <div className="p-8 text-center">
         <h1 className="mb-4 text-4xl font-bold">Results</h1>
@@ -93,7 +103,7 @@ const ResultsPage: NextPage = () => {
             </th>
           </tr>
         </thead>
-        <tbody>{results}</tbody>
+        <tbody>{allResults}</tbody>
       </table>
     </div>
   );

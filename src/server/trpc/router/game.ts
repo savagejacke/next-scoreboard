@@ -23,6 +23,17 @@ export const gameRouter = router({
         },
       });
     }),
+  getUserResults: protectedProcedure.query(async ({ ctx }) => {
+    const asPlayer1 = await ctx.prisma.gameResult.findMany({
+      where: { player1Id: ctx.session.user.id },
+    });
+    const asPlayer2 = await ctx.prisma.gameResult.findMany({
+      where: { player2Id: ctx.session.user.id },
+    });
+    return {
+      games: asPlayer1.concat(asPlayer2),
+    };
+  }),
   logGame: protectedProcedure
     .input(
       z.object({
@@ -36,6 +47,7 @@ export const gameRouter = router({
           name: z.string(),
           army: z.string(),
           score: z.number(),
+          id: z.string().nullish(),
         }),
         numberOfRounds: z.number(),
         description: z.string().nullish(),
@@ -48,9 +60,11 @@ export const gameRouter = router({
           player1Name: input.player1.name,
           player1Army: input.player1.army,
           player1Score: input.player1.score,
+          player1Id: ctx.session.user.id,
           player2Name: input.player2.name,
           player2Army: input.player2.army,
           player2Score: input.player2.score,
+          player2Id: input.player2.id ?? undefined,
           numberOfRounds: input.numberOfRounds,
           description: input.description,
         },
