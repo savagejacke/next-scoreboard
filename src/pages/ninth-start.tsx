@@ -3,10 +3,34 @@ import { SECONDARIES } from "@/data/Secondaries";
 import type { Secondary, SecondaryType } from "@/models/secondary";
 import { useGameStore, type PlayerChange } from "@/zustand/zustand";
 import { type NextPage } from "next";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 const NinthStartPage: NextPage = () => {
+  const { data: session, status } = useSession();
+  const [guest, setGuest] = useState(false);
+  const updateName = useGameStore((state) => state.updateName);
+
+  if (status !== "authenticated" && !guest) {
+    return (
+      <div className="flex flex-col items-center p-16">
+        <div className="text-xl font-bold">You are not signed in</div>
+        <button
+          onClick={() => signIn(undefined, { callbackUrl: "/ninth-start" })}
+          className="hover:underline"
+        >
+          Sign in
+        </button>
+        <button className="hover:underline" onClick={() => setGuest(true)}>
+          or continue as guest (your game {"won't"} be logged)
+        </button>
+      </div>
+    );
+  } else if (typeof session?.user?.name === "string") {
+    updateName(session.user.name, "player1");
+  }
+
   return (
     <>
       <div className="flex flex-row items-center justify-evenly">
