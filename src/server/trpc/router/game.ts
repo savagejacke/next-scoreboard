@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../trpc";
 
 export const gameRouter = router({
   getAllResults: publicProcedure.query(async ({ ctx }) => {
@@ -23,7 +23,7 @@ export const gameRouter = router({
         },
       });
     }),
-  logGame: publicProcedure
+  logGame: protectedProcedure
     .input(
       z.object({
         gameType: z.string(),

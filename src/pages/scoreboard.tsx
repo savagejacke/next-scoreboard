@@ -4,15 +4,18 @@ import { useSecondaryScore } from "@/hooks/useSecondaryScore";
 import { trpc } from "@/utils/trpc";
 import { type PlayerChange, useGameStore } from "@/zustand/zustand";
 import { type NextPage } from "next";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 const ScoreboardPage: NextPage = () => {
+  const { status } = useSession();
+
   return (
     <div className="flex flex-col items-center">
       <Scoreboard playerNumber="player1" />
       <Scoreboard playerNumber="player2" />
-      <GameLogger />
+      {status === "authenticated" && <GameLogger />}
     </div>
   );
 };
