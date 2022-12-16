@@ -20,8 +20,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <link rel="icon" href="/aquila.png" />
       </Head>
       <main>
-        <Nav />
         <SessionProvider session={session}>
+          <Nav />
           <Component {...pageProps} />
         </SessionProvider>
       </main>
