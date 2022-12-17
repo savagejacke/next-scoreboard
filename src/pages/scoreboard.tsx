@@ -12,7 +12,7 @@ const ScoreboardPage: NextPage = () => {
   const { status } = useSession();
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center p-8">
       <Scoreboard playerNumber="player1" />
       <Scoreboard playerNumber="player2" />
       {status === "authenticated" && <GameLogger />}

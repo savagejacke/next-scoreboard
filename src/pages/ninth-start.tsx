@@ -177,7 +177,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
 
   if (!player.name)
     return (
-      <div className="max-w-1/2 p-4">
+      <div className="w-1/2 p-4 text-center">
         <h1 className="text-2xl font-bold">Enter your name:</h1>
         <input
           type="text"
@@ -311,7 +311,7 @@ const ContinueButton: React.FC = () => {
         className="btn rounded bg-green-500 px-4 py-2 font-bold text-white opacity-75 hover:bg-green-600"
         disabled
       >
-        Finish your selectiosn
+        Finish your selections
       </button>
     );
 
