@@ -33,6 +33,15 @@ model GameResult {
   updatedAt      DateTime @updatedAt
 }
 
+model Group {
+  id      String @id @default(cuid())
+  name    String @unique
+  admin   User   @relation(fields: [adminId], references: [id])
+  members User[] @relation("members")
+  invites User[] @relation("invites")
+  adminId String @unique
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -70,6 +79,10 @@ model User {
   sessions       Session[]
   gamesAsPlayer1 GameResult[] @relation("player1")
   gamesAsPlayer2 GameResult[] @relation("player2")
+  group          Group?       @relation("members", fields: [groupId], references: [id])
+  groupId        String?
+  InvitedTo      Group[]      @relation("invites")
+  adminOf        Group?
 }
 
 model VerificationToken {
