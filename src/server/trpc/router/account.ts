@@ -4,30 +4,48 @@ import { protectedProcedure, router } from "../trpc";
 
 export const accountRouter = router({
   getGroup: protectedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.prisma.user.findUniqueOrThrow({
+    const user = await ctx.prisma.user.findUnique({
       where: { id: ctx.session.user.id },
-      include: { group: true },
+      include: {
+        group: {
+          include: { members: true, admin: true },
+        },
+      },
     });
-    return user.group;
+    if (user?.group) return user.group;
+
+    return await ctx.prisma.group.findUnique({
+      where: { adminId: ctx.session.user.id },
+      include: { members: true },
+    });
   }),
   getGroupMembers: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUniqueOrThrow({
       where: { id: ctx.session.user.id },
+      include: {
+        group: true,
+        adminOf: {
+          include: { members: true, admin: true },
+        },
+      },
     });
-    if (!user.groupId) {
+    const group = user.groupId
+      ? await ctx.prisma.group.findUnique({
+          where: { id: user.groupId },
+          include: { members: true, admin: true },
+        })
+      : user.adminOf;
+    if (!group) {
       throw new TRPCError({
         message: "You are not a member of a group",
         code: "BAD_REQUEST",
       });
     }
-    const group = await ctx.prisma.group.findUniqueOrThrow({
-      where: { id: user.groupId },
-      include: { members: true, admin: true },
-    });
     const members = group.members ?? [];
     return members.concat(group.admin).map((user) => ({
       id: user.id,
       name: user.name,
+      email: user.email,
     }));
   }),
   getInvitedTo: protectedProcedure.query(async ({ ctx }) => {
@@ -37,22 +55,37 @@ export const accountRouter = router({
     });
     return { invitedTo: user.InvitedTo };
   }),
+  getUninvited: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUniqueOrThrow({
+      where: { id: ctx.session.user.id },
+      include: { adminOf: true },
+    });
+    const allUsers = await ctx.prisma.user.findMany({
+      include: { InvitedTo: true },
+    });
+    return allUsers.filter(
+      (member) =>
+        !(
+          member.InvitedTo.some((group) => group.id === user.adminOf?.id) ||
+          member.groupId === user.adminOf?.id ||
+          member.id === user.id
+        )
+    );
+  }),
   createGroup: protectedProcedure
     .input(z.object({ name: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (typeof ctx.session.user.name !== "string") {
-        throw new TRPCError({
-          message:
-            "You must be logged in with an account name to perform this action",
-          code: "BAD_REQUEST",
-        });
-      }
-      return await ctx.prisma.group.create({
+      const group = await ctx.prisma.group.create({
         data: {
           name: input.name,
-          adminId: ctx.session.user.name,
+          adminId: ctx.session.user.id,
         },
       });
+      await ctx.prisma.user.update({
+        where: { id: ctx.session.user.id },
+        data: { groupId: group.id },
+      });
+      return group;
     }),
   inviteToGroup: protectedProcedure
     .input(z.object({ id: z.string() }))
@@ -61,7 +94,7 @@ export const accountRouter = router({
         where: { adminId: ctx.session.user.id },
         data: {
           invites: {
-            create: [{ id: input.id }],
+            connect: [{ id: input.id }],
           },
         },
       });
@@ -76,17 +109,46 @@ export const accountRouter = router({
       const group = await ctx.prisma.group.findUniqueOrThrow({
         where: { name: input.name },
       });
-      if (!user.InvitedTo.includes(group)) {
+      if (!user.InvitedTo.some((invite) => invite.id === group.id)) {
         throw new TRPCError({
           message: "You are not invited to this group",
           code: "UNAUTHORIZED",
         });
       }
-      return await ctx.prisma.group.update({
+      const addedGroup = await ctx.prisma.group.update({
         where: { name: input.name },
         data: {
           members: {
-            create: [{ id: user.id }],
+            connect: [{ id: user.id }],
+          },
+          invites: {
+            disconnect: [{ id: user.id }],
+          },
+        },
+      });
+      await ctx.prisma.user.update({
+        where: { id: ctx.session.user.id },
+        data: {
+          InvitedTo: {
+            disconnect: [{ id: addedGroup.id }],
+          },
+        },
+      });
+      return addedGroup;
+    }),
+  disbandGroup: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.group.delete({
+      where: { adminId: ctx.session.user.id },
+    });
+  }),
+  removeFromGroup: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.group.update({
+        where: { adminId: ctx.session.user.id },
+        data: {
+          members: {
+            disconnect: { id: input.id },
           },
         },
       });
