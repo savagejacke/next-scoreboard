@@ -24,15 +24,14 @@ export const gameRouter = router({
       });
     }),
   getUserResults: protectedProcedure.query(async ({ ctx }) => {
-    const asPlayer1 = await ctx.prisma.gameResult.findMany({
-      where: { player1Id: ctx.session.user.id },
+    return await ctx.prisma.gameResult.findMany({
+      where: {
+        OR: [
+          { player1Id: ctx.session.user.id },
+          { player2Id: ctx.session.user.id },
+        ],
+      },
     });
-    const asPlayer2 = await ctx.prisma.gameResult.findMany({
-      where: { player2Id: ctx.session.user.id },
-    });
-    return {
-      games: asPlayer1.concat(asPlayer2),
-    };
   }),
   getGroupResults: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findFirstOrThrow({

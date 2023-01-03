@@ -13,9 +13,7 @@ const ResultsPage: NextPage = () => {
   const userResultsQuery = trpc.game.getUserResults.useQuery();
   const groupResults = trpc.game.getGroupResults.useQuery();
 
-  const authedData = user?.groupId
-    ? groupResults.data
-    : userResultsQuery.data?.games;
+  const authedData = user?.groupId ? groupResults.data : userResultsQuery.data;
   const data =
     session.status === "authenticated" ? authedData : allResultsQuery.data;
 
