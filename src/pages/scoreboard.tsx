@@ -33,11 +33,11 @@ const Scoreboard: React.FC<{ playerNumber: PlayerChange }> = ({
     player.secondaries.reduce((val, sec) => val + sec.score, 0);
 
   return (
-    <div className="max-w-1/2 p-4">
-      <h2 className="text-center text-4xl font-bold">
+    <div className="p-4 max-w-1/2">
+      <h2 className="text-4xl font-bold text-center">
         {player.name} - {score}
       </h2>
-      <div className="flex basis-1/5 flex-row py-4">
+      <div className="flex flex-row py-4 basis-1/5">
         <PrimaryCols playerNumber={playerNumber} />
         <SecondaryCol idx={0} player={playerNumber} />
         <SecondaryCol idx={1} player={playerNumber} />
@@ -62,41 +62,41 @@ const PrimaryCols: React.FC<{ playerNumber: PlayerChange }> = ({
   return (
     <>
       <div className="flex flex-col">
-        <div className="border border-gray-400 text-center">
-          <h3 className="text-center font-semibold">Primary</h3>
+        <div className="text-center border border-gray-400">
+          <h3 className="font-semibold text-center">Primary</h3>
         </div>
         <div className="flex flex-col">
           <input
             type="number"
             placeholder="-"
             disabled
-            className="border border-gray-400 bg-gray-100 text-center"
+            className="text-center bg-gray-100 border border-gray-400"
           />
           <input
             type="number"
-            className="border border-gray-400 bg-white text-center"
+            className="text-center bg-white border border-gray-400"
             onChange={(e) => update(+e.target.value, 2, "Basic")}
           />
           <input
             type="number"
-            className="border border-gray-400 bg-white text-center"
+            className="text-center bg-white border border-gray-400"
             onChange={(e) => update(+e.target.value, 3, "Basic")}
           />
           <input
             type="number"
-            className="border border-gray-400 bg-white text-center"
+            className="text-center bg-white border border-gray-400"
             onChange={(e) => update(+e.target.value, 4, "Basic")}
           />
           <input
             type="number"
-            className="border border-gray-400 bg-white text-center"
+            className="text-center bg-white border border-gray-400"
             onChange={(e) => update(+e.target.value, 5, "Basic")}
           />
         </div>
-        <div className="border border-gray-400 text-center">{score}</div>
+        <div className="text-center border border-gray-400">{score}</div>
       </div>
       <div className="flex flex-col">
-        <div className="border border-gray-400 text-center">
+        <div className="text-center border border-gray-400">
           <h3 className="font-semibold">Additional Primary</h3>
         </div>
         <div className="flex flex-col">
@@ -104,29 +104,29 @@ const PrimaryCols: React.FC<{ playerNumber: PlayerChange }> = ({
             type="number"
             placeholder="-"
             disabled
-            className="border border-gray-400 bg-gray-100 text-center"
+            className="text-center bg-gray-100 border border-gray-400"
           />
           <input
             type="number"
-            className="border border-gray-400 bg-white text-center"
+            className="text-center bg-white border border-gray-400"
             onChange={(e) => update(+e.target.value, 2, "Additional")}
           />
           <input
             type="number"
-            className="border border-gray-400 bg-white text-center"
+            className="text-center bg-white border border-gray-400"
             onChange={(e) => update(+e.target.value, 3, "Additional")}
           />
           <input
             type="number"
-            className="border border-gray-400 bg-white text-center"
+            className="text-center bg-white border border-gray-400"
             onChange={(e) => update(+e.target.value, 4, "Additional")}
           />
           <input
             type="number"
-            className="border border-gray-400 bg-white text-center"
+            className="text-center bg-white border border-gray-400"
             onChange={(e) => update(+e.target.value, 5, "Additional")}
           />
-          <div className="border border-gray-400 text-center">-</div>
+          <div className="text-center border border-gray-400">-</div>
         </div>
       </div>
     </>
@@ -152,36 +152,36 @@ const SecondaryCol: React.FC<{ idx: number; player: PlayerChange }> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="border border-gray-400 px-1 text-center">
+      <div className="px-1 text-center border border-gray-400">
         <h3 className="font-semibold">{secondary?.title ?? "N/A"}</h3>
       </div>
       <div className="flex flex-col">
         <input
           type="number"
-          className="border border-gray-400 bg-white text-center"
+          className="text-center bg-white border border-gray-400"
           onChange={(e) => update(+e.target.value, 1)}
         />
         <input
           type="number"
-          className="border border-gray-400 bg-white text-center"
+          className="text-center bg-white border border-gray-400"
           onChange={(e) => update(+e.target.value, 2)}
         />
         <input
           type="number"
-          className="border border-gray-400 bg-white text-center"
+          className="text-center bg-white border border-gray-400"
           onChange={(e) => update(+e.target.value, 3)}
         />
         <input
           type="number"
-          className="border border-gray-400 bg-white text-center"
+          className="text-center bg-white border border-gray-400"
           onChange={(e) => update(+e.target.value, 4)}
         />
         <input
           type="number"
-          className="border border-gray-400 bg-white text-center"
+          className="text-center bg-white border border-gray-400"
           onChange={(e) => update(+e.target.value, 5)}
         />
-        <div className="border border-gray-400 text-center">
+        <div className="text-center border border-gray-400">
           {secondary?.score ?? 0}
         </div>
       </div>
@@ -201,10 +201,10 @@ const ActionSecondaryCol: React.FC<{
 
   return (
     <div className="flex flex-col">
-      <div className="border border-gray-400 px-1 text-center">
+      <div className="px-1 text-center border border-gray-400">
         <h3 className="font-semibold">{secondary?.title}</h3>
       </div>
-      <div className="flex justify-around border border-gray-400 bg-white text-center">
+      <div className="flex justify-around text-center bg-white border border-gray-400">
         <label
           htmlFor={`turn1${player.name}-${secondary?.title}`}
           className="ml-1"
@@ -218,7 +218,7 @@ const ActionSecondaryCol: React.FC<{
           className="mx-1"
         />
       </div>
-      <div className="flex justify-around border border-gray-400 bg-white text-center">
+      <div className="flex justify-around text-center bg-white border border-gray-400">
         <label
           htmlFor={`turn2${player.name}-${secondary?.title}`}
           className="ml-1"
@@ -232,7 +232,7 @@ const ActionSecondaryCol: React.FC<{
           className="mx-1"
         />
       </div>
-      <div className="flex justify-around border border-gray-400 bg-white text-center">
+      <div className="flex justify-around text-center bg-white border border-gray-400">
         <label
           htmlFor={`turn3${player.name}-${secondary?.title}`}
           className="ml-1"
@@ -246,7 +246,7 @@ const ActionSecondaryCol: React.FC<{
           className="mx-1"
         />
       </div>
-      <div className="flex justify-around border border-gray-400 bg-white text-center">
+      <div className="flex justify-around text-center bg-white border border-gray-400">
         <label
           htmlFor={`turn4${player.name}-${secondary?.title}`}
           className="ml-1"
@@ -260,7 +260,7 @@ const ActionSecondaryCol: React.FC<{
           className="mx-1"
         />
       </div>
-      <div className="flex justify-around border border-gray-400 bg-white text-center">
+      <div className="flex justify-around text-center bg-white border border-gray-400">
         <label
           htmlFor={`turn5${player.name}-${secondary?.title}`}
           className="ml-1"
@@ -274,7 +274,7 @@ const ActionSecondaryCol: React.FC<{
           className="mx-1"
         />
       </div>
-      <div className="border border-gray-400 text-center">
+      <div className="text-center border border-gray-400">
         {secondary?.score ?? 0}
       </div>
     </div>
@@ -317,11 +317,13 @@ const GameLogger: React.FC = () => {
         name: player1.name,
         army: p1LogArmy,
         score: player1Score,
+        id: player1.id,
       },
       player2: {
         name: player2.name,
         army: p2LogArmy,
         score: player2Score,
+        id: player2.id,
       },
       numberOfRounds,
       description,
@@ -342,17 +344,17 @@ const GameLogger: React.FC = () => {
         id="number-of-rounds"
         onChange={(e) => setNumberOfRounds(+e.target.value)}
         value={numberOfRounds}
-        className="rounded-md border border-black bg-white text-center"
+        className="text-center bg-white border border-black rounded-md"
       />
       <textarea
         cols={50}
         rows={3}
         onChange={(e) => setDescription(e.target.value)}
         placeholder={describe}
-        className="my-4 rounded-md border border-black bg-white p-1"
+        className="p-1 my-4 bg-white border border-black rounded-md"
       />
       <button
-        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+        className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
         onClick={logGame}
       >
         Log game

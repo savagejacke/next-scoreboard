@@ -5,4 +5,5 @@ export interface Player {
   army: string;
   secondaries: Secondary[];
   primaryScore: number;
+  id?: string;
 }

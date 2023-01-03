@@ -54,6 +54,7 @@ export const gameRouter = router({
           name: z.string(),
           army: z.string(),
           score: z.number(),
+          id: z.string().nullish(),
         }),
         player2: z.object({
           name: z.string(),
@@ -66,13 +67,14 @@ export const gameRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const newResult = await ctx.prisma.gameResult.create({
+      const player1Id = input.player1.id ?? ctx.session.user.id;
+      return await ctx.prisma.gameResult.create({
         data: {
           gameType: input.gameType,
           player1Name: input.player1.name,
           player1Army: input.player1.army,
           player1Score: input.player1.score,
-          player1Id: ctx.session.user.id,
+          player1Id,
           player2Name: input.player2.name,
           player2Army: input.player2.army,
           player2Score: input.player2.score,
@@ -81,6 +83,5 @@ export const gameRouter = router({
           description: input.description,
         },
       });
-      return newResult;
     }),
 });

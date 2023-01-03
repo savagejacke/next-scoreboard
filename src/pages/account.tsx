@@ -10,7 +10,10 @@ const AccountPage: NextPage = () => {
   const session = useSession();
   const router = useRouter();
   const ctx = trpc.useContext();
-  const updateName = useGameStore((state) => state.updateName);
+  const { updateName, updateId } = useGameStore((state) => ({
+    updateName: state.updateName,
+    updateId: state.updateId,
+  }));
 
   const { data: group, isFetched: groupFetched } =
     trpc.account.getGroup.useQuery();
@@ -62,12 +65,16 @@ const AccountPage: NextPage = () => {
   const startGame = ({
     player1Name,
     player2Name,
+    player2Id,
   }: {
     player1Name: string | null | undefined;
     player2Name: string | null | undefined;
+    player2Id: string | null | undefined;
   }) => {
     updateName(player1Name ?? "", "player1");
+    updateId(session.data?.user?.id, "player1");
     updateName(player2Name ?? "", "player2");
+    updateId(player2Id ?? undefined, "player2");
     router.push("/ninth-start");
   };
 
@@ -232,6 +239,7 @@ const AccountPage: NextPage = () => {
                   startGame({
                     player1Name: session.data.user?.name,
                     player2Name: member.name,
+                    player2Id: member.id,
                   })
                 }
               >
