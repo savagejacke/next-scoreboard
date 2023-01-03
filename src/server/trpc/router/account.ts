@@ -42,7 +42,7 @@ export const accountRouter = router({
       });
     }
     const members = group.members ?? [];
-    return members.concat(group.admin).map((user) => ({
+    return members.map((user) => ({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -153,4 +153,14 @@ export const accountRouter = router({
         },
       });
     }),
+  leaveGroup: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.user.update({
+      where: { id: ctx.session.user.id },
+      data: {
+        group: {
+          disconnect: true,
+        },
+      },
+    });
+  }),
 });

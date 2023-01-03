@@ -5,16 +5,19 @@ import { useSession } from "next-auth/react";
 const ResultsPage: NextPage = () => {
   const session = useSession();
 
+  const { data: user } = trpc.auth.getUser.useQuery();
+
   const allResultsQuery = trpc.game.getResultsByType.useQuery({
     type: "40k 9th Edition",
   });
-
   const userResultsQuery = trpc.game.getUserResults.useQuery();
+  const groupResults = trpc.game.getGroupResults.useQuery();
 
+  const authedData = user?.groupId
+    ? groupResults.data
+    : userResultsQuery.data?.games;
   const data =
-    session.status === "authenticated"
-      ? userResultsQuery?.data?.games
-      : allResultsQuery.data;
+    session.status === "authenticated" ? authedData : allResultsQuery.data;
 
   const allResults = data?.map((result) => {
     const winner =
@@ -24,34 +27,34 @@ const ResultsPage: NextPage = () => {
 
     return (
       <tr key={result.id}>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.createdAt.toLocaleDateString()}
         </td>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.player1Name}
         </td>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.player2Name}
         </td>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.player1Army}
         </td>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.player2Army}
         </td>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.player1Score}
         </td>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.player2Score}
         </td>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.player1Score === result.player2Score ? "Tie" : winner}
         </td>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.numberOfRounds}
         </td>
-        <td className="border border-gray-400 px-1 text-center">
+        <td className="px-1 text-center border border-gray-400">
           {result.description}
         </td>
       </tr>
@@ -71,34 +74,34 @@ const ResultsPage: NextPage = () => {
       <table>
         <thead>
           <tr>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Date
             </th>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Player 1
             </th>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Player 2
             </th>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Player 1 Army
             </th>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Player 2 Army
             </th>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Player 1 Score
             </th>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Player 2 Score
             </th>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Winner
             </th>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Rounds
             </th>
-            <th className="border border-gray-400 px-1 text-center font-bold">
+            <th className="px-1 font-bold text-center border border-gray-400">
               Description
             </th>
           </tr>

@@ -34,6 +34,19 @@ export const gameRouter = router({
       games: asPlayer1.concat(asPlayer2),
     };
   }),
+  getGroupResults: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findFirstOrThrow({
+      where: { id: ctx.session.user.id },
+    });
+    return await ctx.prisma.gameResult.findMany({
+      where: {
+        OR: [
+          { player1: { groupId: user.groupId } },
+          { player2: { groupId: user.groupId } },
+        ],
+      },
+    });
+  }),
   logGame: protectedProcedure
     .input(
       z.object({
