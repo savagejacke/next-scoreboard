@@ -144,6 +144,17 @@ export const useGameStore = create<GameState>((set) => ({
       });
     }
   },
+  updateId: (id: string | undefined, player: PlayerChange) => {
+    if (player === "player1") {
+      set((state) => {
+        return { player1: { ...state.player1, id } };
+      });
+    } else {
+      set((state) => {
+        return { player2: { ...state.player2, id } };
+      });
+    }
+  },
 }));
 
 interface GameState {
@@ -160,6 +171,7 @@ interface GameState {
     idx: number,
     player: PlayerChange
   ) => void;
+  updateId: (id: string | undefined, player: PlayerChange) => void;
 }
 
 export type PlayerChange = "player1" | "player2";

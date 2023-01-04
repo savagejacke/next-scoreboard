@@ -20,13 +20,26 @@ model GameResult {
   player1Name    String
   player1Army    String
   player1Score   Int
+  player1        User?    @relation("player1", fields: [player1Id], references: [id])
+  player1Id      String?
   player2Name    String
   player2Army    String
   player2Score   Int
+  player2        User?    @relation("player2", fields: [player2Id], references: [id])
+  player2Id      String?
   numberOfRounds Int
   description    String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model Group {
+  id      String @id @default(cuid())
+  name    String @unique
+  admin   User   @relation(fields: [adminId], references: [id])
+  members User[] @relation("members")
+  invites User[] @relation("invites")
+  adminId String @unique
 }
 
 // Necessary for Next auth
@@ -57,13 +70,19 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id             String       @id @default(cuid())
+  name           String?
+  email          String?      @unique
+  emailVerified  DateTime?
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+  gamesAsPlayer1 GameResult[] @relation("player1")
+  gamesAsPlayer2 GameResult[] @relation("player2")
+  group          Group?       @relation("members", fields: [groupId], references: [id])
+  groupId        String?
+  InvitedTo      Group[]      @relation("invites")
+  adminOf        Group?
 }
 
 model VerificationToken {
