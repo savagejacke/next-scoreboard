@@ -149,7 +149,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       <h2 className="text-2xl font-bold">Select Chapter</h2>
       <select
         onChange={(e) => onChapterChange(e.target.value)}
-        className="flex-row ml-1 text-center bg-white border border-solid disabled:bg-gray-100"
+        className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
       >
         <option value="--">--</option>
         {CHAPTERS.map((chap) => (
@@ -172,7 +172,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       <h2 className="text-2xl font-bold">Select Legion</h2>
       <select
         onChange={(e) => onLegionChange(e.target.value)}
-        className="flex-row ml-1 text-center bg-white border border-solid disabled:bg-gray-100"
+        className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
       >
         <option value="--">--</option>
         {LEGIONS.map((legion) => (
@@ -210,7 +210,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       </label>
       <select
         id="player2GroupSelect"
-        className="flex-row my-2 text-center bg-white border border-solid disabled:bg-gray-100"
+        className="my-2 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
         onChange={(e) => setPlayer2(e.target.value)}
       >
         <option value={""}>--</option>
@@ -218,7 +218,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       </select>
       <button
         onClick={() => setStart(true)}
-        className="px-2 font-semibold text-blue-500 border border-blue-500 border-solid rounded hover:bg-blue-500 hover:text-white"
+        className="rounded border border-solid border-blue-500 px-2 font-semibold text-blue-500 hover:bg-blue-500 hover:text-white"
       >
         Start
       </button>
@@ -244,19 +244,19 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
         <input
           type="text"
           onChange={(e) => setName(e.target.value)}
-          className="mt-2 bg-gray-100 border-gray-400 rounded-md focus:bg-white"
+          className="mt-2 rounded-md border-gray-400 bg-gray-100 focus:bg-white"
         />
         <button
           onClick={goToForm}
-          className="px-2 ml-1 font-semibold text-blue-500 border border-blue-500 border-solid rounded hover:bg-blue-500 hover:text-white"
+          className="ml-1 rounded border border-solid border-blue-500 px-2 font-semibold text-blue-500 hover:bg-blue-500 hover:text-white"
         >
           Submit
         </button>
       </div>
     );
   return (
-    <div className="flex flex-col items-center w-1/2 p-4">
-      <h1 className="flex-row mb-4 text-4xl font-bold">{player.name}</h1>
+    <div className="flex w-1/2 flex-col items-center p-4">
+      <h1 className="mb-4 flex-row text-4xl font-bold">{player.name}</h1>
       <label
         className="flex-row text-2xl font-bold"
         htmlFor={`${player.name}-army`}
@@ -264,7 +264,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
         Select army:
       </label>
       <select
-        className="flex-row mb-2 ml-1 text-center bg-white border border-solid disabled:bg-gray-100"
+        className="mb-2 ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
         id={`${player.name}-army`}
         onChange={(e) => actions.updateArmy(e.target.value, playerNumber)}
       >
@@ -273,14 +273,14 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       </select>
       {chapterSelect}
       {legionSelect}
-      <h2 className="flex-row mt-2 mb-1 text-2xl font-bold">
+      <h2 className="mt-2 mb-1 flex-row text-2xl font-bold">
         Select Secondaries:
       </h2>
-      <div className="flex-row mb-1">
+      <div className="mb-1 flex-row">
         <label htmlFor={`${player.name}-pte`}>Purge the Enemy</label>
         <select
           id={`${player.name}-pte`}
-          className="flex-row ml-1 text-center bg-white border border-solid disabled:bg-gray-100"
+          className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
           onChange={(e) => onSecondaryChange(e.target.value, "Purge The Enemy")}
           disabled={disableSecondary("Purge The Enemy")}
         >
@@ -288,11 +288,11 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
           {pteOptions}
         </select>
       </div>
-      <div className="flex-row mb-1">
+      <div className="mb-1 flex-row">
         <label htmlFor={`${player.name}-nmnr`}>No Mercy, No Respite</label>
         <select
           id={`${player.name}-nmnr`}
-          className="flex-row ml-1 text-center bg-white border border-solid disabled:bg-gray-100"
+          className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
           onChange={(e) =>
             onSecondaryChange(e.target.value, "No Mercy, No Respite")
           }
@@ -302,11 +302,11 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
           {nmnrOptions}
         </select>
       </div>
-      <div className="flex-row mb-1">
+      <div className="mb-1 flex-row">
         <label htmlFor={`${player.name}-wc`}>Warpcraft</label>
         <select
           id={`${player.name}-wc`}
-          className="flex-row ml-1 text-center bg-white border border-solid disabled:bg-gray-100"
+          className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
           onChange={(e) => onSecondaryChange(e.target.value, "Warpcraft")}
           disabled={disableSecondary("Warpcraft")}
         >
@@ -314,11 +314,11 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
           {wcOptions}
         </select>
       </div>
-      <div className="flex-row mb-1">
+      <div className="mb-1 flex-row">
         <label htmlFor={`${player.name}-bs`}>Battlefield Supremacy</label>
         <select
           id={`${player.name}-bs`}
-          className="flex-row ml-1 text-center bg-white border border-solid disabled:bg-gray-100"
+          className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
           onChange={(e) =>
             onSecondaryChange(e.target.value, "Battlefield Supremacy")
           }
@@ -329,10 +329,10 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
         </select>
       </div>
       <div className="flex-row">
-        <label htmlFor={`${player.name}-so`}>Battlefield Supremacy</label>
+        <label htmlFor={`${player.name}-so`}>Shadow Operations</label>
         <select
           id={`${player.name}-so`}
-          className="flex-row ml-1 text-center bg-white border border-solid disabled:bg-gray-100"
+          className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
           onChange={(e) =>
             onSecondaryChange(e.target.value, "Shadow Operations")
           }
@@ -370,7 +370,7 @@ const ContinueButton: React.FC = () => {
   if (!p1Ready() || !p2Ready())
     return (
       <button
-        className="px-4 py-2 font-bold text-white bg-green-500 rounded opacity-75 btn hover:bg-green-600"
+        className="btn rounded bg-green-500 px-4 py-2 font-bold text-white opacity-75 hover:bg-green-600"
         disabled
       >
         Finish your selections
@@ -379,7 +379,7 @@ const ContinueButton: React.FC = () => {
 
   return (
     <button
-      className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+      className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
       onClick={() => router.push("/scoreboard")}
     >
       Start Game
