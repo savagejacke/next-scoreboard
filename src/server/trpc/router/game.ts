@@ -12,6 +12,7 @@ export const gameRouter = router({
         where: {
           gameType: input.type,
         },
+        orderBy: { createdAt: "asc" },
       });
     }),
   getResultById: publicProcedure
@@ -31,6 +32,7 @@ export const gameRouter = router({
           { player2Id: ctx.session.user.id },
         ],
       },
+      orderBy: { createdAt: "asc" },
     });
   }),
   getGroupResults: protectedProcedure.query(async ({ ctx }) => {
@@ -44,6 +46,7 @@ export const gameRouter = router({
           { player2: { groupId: user.groupId } },
         ],
       },
+      orderBy: { createdAt: "asc" },
     });
   }),
   logGame: protectedProcedure
