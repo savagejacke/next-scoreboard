@@ -11,6 +11,7 @@ export const ARMIES = [
   "Chaos Marines",
   "Death Guard",
   "Thousand Sons",
+  "World Eaters",
   "Craftworld Eldar",
   "Drukhari",
   "Genestealer Cults",
@@ -43,7 +44,6 @@ export const LEGIONS = [
   "Iron Warriors",
   "Night Lords",
   "Word Bearers",
-  "World Eaters",
   "Red Corsairs",
   "Creations of Bile",
 ];

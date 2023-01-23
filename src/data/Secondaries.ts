@@ -68,12 +68,6 @@ export const SECONDARIES: Secondary[] = [
     score: 0,
   },
   {
-    title: "Slay the Heretic",
-    type: "Purge The Enemy",
-    armyRequirement: "Adepta Sororitas",
-    score: 0,
-  },
-  {
     title: "A Leap of Faith",
     type: "No Mercy, No Respite",
     armyRequirement: "Adepta Sororitas",
@@ -128,12 +122,6 @@ export const SECONDARIES: Secondary[] = [
     score: 0,
   },
   {
-    title: "Uncharted Sequencing",
-    type: "Battlefield Supremacy",
-    armyRequirement: "Adeptus Mechanicus",
-    score: 0,
-  },
-  {
     title: "By Lasgun and Bayonet",
     type: "Purge The Enemy",
     armyRequirement: "Imperial Guard",
@@ -148,12 +136,6 @@ export const SECONDARIES: Secondary[] = [
   {
     title: "Boots on the Ground",
     type: "Battlefield Supremacy",
-    armyRequirement: "Imperial Guard",
-    score: 0,
-  },
-  {
-    title: "Special Orders",
-    type: "Shadow Operations",
     armyRequirement: "Imperial Guard",
     score: 0,
   },
@@ -173,12 +155,6 @@ export const SECONDARIES: Secondary[] = [
     title: "Purifying Ritual",
     type: "Warpcraft",
     armyRequirement: "Grey Knights",
-    score: 0,
-  },
-  {
-    title: "Duel of Honor",
-    type: "Purge The Enemy",
-    armyRequirement: "Imperial Knights",
     score: 0,
   },
   {
@@ -302,12 +278,6 @@ export const SECONDARIES: Secondary[] = [
     score: 0,
   },
   {
-    title: "Wrath of Magnus",
-    type: "No Mercy, No Respite",
-    armyRequirement: "Thousand Sons",
-    score: 0,
-  },
-  {
     title: "Mutate Landscape",
     type: "Warpcraft",
     armyRequirement: "Thousand Sons",
@@ -332,12 +302,6 @@ export const SECONDARIES: Secondary[] = [
     score: 0,
   },
   {
-    title: "The Hidden Path",
-    type: "Battlefield Supremacy",
-    armyRequirement: "Craftworld Eldar",
-    score: 0,
-  },
-  {
     title: "Scout the Enemy",
     type: "Shadow Operations",
     armyRequirement: "Craftworld Eldar",
@@ -345,12 +309,6 @@ export const SECONDARIES: Secondary[] = [
   },
   {
     title: "Take them Alive!",
-    type: "Purge The Enemy",
-    armyRequirement: "Drukhari",
-    score: 0,
-  },
-  {
-    title: "Beasts for the Arenas",
     type: "Purge The Enemy",
     armyRequirement: "Drukhari",
     score: 0,
@@ -404,12 +362,6 @@ export const SECONDARIES: Secondary[] = [
     score: 0,
   },
   {
-    title: "Code of Combat",
-    type: "Purge The Enemy",
-    armyRequirement: "Necrons",
-    score: 0,
-  },
-  {
     title: "The Treasures of Aeons",
     type: "No Mercy, No Respite",
     armyRequirement: "Necrons",
@@ -425,12 +377,6 @@ export const SECONDARIES: Secondary[] = [
     title: "Ancient Machineries",
     type: "Shadow Operations",
     armyRequirement: "Necrons",
-    score: 0,
-  },
-  {
-    title: "Da Biggest and Da Best",
-    type: "Purge The Enemy",
-    armyRequirement: "Orks",
     score: 0,
   },
   {
@@ -488,57 +434,15 @@ export const SECONDARIES: Secondary[] = [
     score: 0,
   },
   {
-    title: "Bathe your Blade in the Blood of the Foe",
-    type: "Purge The Enemy",
-    armyRequirement: "Black Templars",
-    score: 0,
-  },
-  {
     title: "Carry out your Vows",
     type: "No Mercy, No Respite",
     armyRequirement: "Black Templars",
     score: 0,
   },
   {
-    title: "Allow Not the Worship of Unclean Idols",
-    type: "Battlefield Supremacy",
-    armyRequirement: "Black Templars",
-    score: 0,
-  },
-  {
-    title: "Blade of Sanguinius",
-    type: "Purge The Enemy",
-    armyRequirement: "Blood Angels",
-    score: 0,
-  },
-  {
-    title: "Fury of the Lost",
-    type: "No Mercy, No Respite",
-    armyRequirement: "Blood Angels",
-    score: 0,
-  },
-  {
-    title: "Death from Above",
-    type: "No Mercy, No Respite",
-    armyRequirement: "Blood Angels",
-    score: 0,
-  },
-  {
     title: "Relentless Assault",
     type: "Battlefield Supremacy",
     armyRequirement: "Blood Angels",
-    score: 0,
-  },
-  {
-    title: "Martial Interdiction",
-    type: "Purge The Enemy",
-    armyRequirement: "Dark Angels",
-    score: 0,
-  },
-  {
-    title: "Death on the Wind",
-    type: "No Mercy, No Respite",
-    armyRequirement: "Dark Angels",
     score: 0,
   },
   {
@@ -550,24 +454,6 @@ export const SECONDARIES: Secondary[] = [
   {
     title: "Cull Order",
     type: "Purge The Enemy",
-    armyRequirement: "Deathwatch",
-    score: 0,
-  },
-  {
-    title: "Suffer not the Alien",
-    type: "No Mercy, No Respite",
-    armyRequirement: "Deathwatch",
-    score: 0,
-  },
-  {
-    title: "The Long Vigil",
-    type: "Battlefield Supremacy",
-    armyRequirement: "Deathwatch",
-    score: 0,
-  },
-  {
-    title: "Cripple Stronghold",
-    type: "Shadow Operations",
     armyRequirement: "Deathwatch",
     score: 0,
   },
@@ -593,24 +479,6 @@ export const SECONDARIES: Secondary[] = [
     title: "The Promethean Creed",
     type: "No Mercy, No Respite",
     armyRequirement: "Salamanders",
-    score: 0,
-  },
-  {
-    title: "Glory Kills",
-    type: "Purge The Enemy",
-    armyRequirement: "Space Wolves",
-    score: 0,
-  },
-  {
-    title: "Heroic Challenge",
-    type: "Purge The Enemy",
-    armyRequirement: "Space Wolves",
-    score: 0,
-  },
-  {
-    title: "A Mighty Saga",
-    type: "No Mercy, No Respite",
-    armyRequirement: "Space Wolves",
     score: 0,
   },
   {
@@ -680,15 +548,21 @@ export const SECONDARIES: Secondary[] = [
     score: 0,
   },
   {
-    title: "Skulls for the Skull Throne",
+    title: "Blood for the Blood God",
     type: "Purge The Enemy",
     armyRequirement: "World Eaters",
     score: 0,
   },
   {
-    title: "Grudge Match",
-    type: "Purge The Enemy",
-    armyRequirement: "Leagues of Votann",
+    title: "The Blood God's Due",
+    type: "No Mercy, No Respite",
+    armyRequirement: "World Eaters",
+    score: 0,
+  },
+  {
+    title: "Pile the Skulls",
+    type: "Battlefield Supremacy",
+    armyRequirement: "World Eaters",
     score: 0,
   },
   {
