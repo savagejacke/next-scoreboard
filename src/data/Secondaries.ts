@@ -27,7 +27,7 @@ export const SECONDARIES: Secondary[] = [
   },
   {
     title: "Abhor the Witch",
-    type: "Warpcraft",
+    type: "Purge The Enemy",
     armyRequirement: "None",
     score: 0,
   },
@@ -62,7 +62,7 @@ export const SECONDARIES: Secondary[] = [
     score: 0,
   },
   {
-    title: "Retrieve Nephilim Data",
+    title: "Retrieve Battlefield Data",
     type: "Shadow Operations",
     armyRequirement: "None",
     score: 0,
