@@ -59,6 +59,18 @@ const Nav: React.FC = () => {
         </button>
         <button
           className="mx-4 my-2 text-xl text-gray-600 hover:text-black"
+          onClick={() => router.push("/ninth-start")}
+        >
+          40k 9th Edition
+        </button>
+        <button
+          className="mx-4 my-2 text-xl text-gray-600 hover:text-black"
+          onClick={() => router.push("/heresy-start")}
+        >
+          Horus Heresy
+        </button>
+        <button
+          className="mx-4 my-2 text-xl text-gray-600 hover:text-black"
           onClick={() => router.push("/scoreboard")}
         >
           Scoreboard

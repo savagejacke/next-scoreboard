@@ -1,5 +1,6 @@
 import { ASTARTES_LEGIONS, HERESY_ARMIES } from "@/data/armies";
 import type { Allegiance } from "@/models/player";
+import { trpc } from "@/utils/trpc";
 import { type PlayerChange, useGameStore } from "@/zustand/zustand";
 import { type NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
@@ -47,6 +48,7 @@ export default HeresyStartPage;
 const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
   playerNumber,
 }) => {
+  const { data: session } = useSession();
   const player = useGameStore((state) =>
     playerNumber === "player1" ? state.player1 : state.player2
   );
@@ -57,6 +59,12 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
     updateAllegiance: state.updateAllegiance,
   }));
   const [name, setName] = useState("");
+  const [start, setStart] = useState(false);
+
+  const membersQuery = trpc.account.getGroupMembers.useQuery();
+  const members = membersQuery.data?.filter(
+    (member) => member.id !== session?.user?.id
+  );
 
   const armyOptions = HERESY_ARMIES.map((army) => (
     <option key={army} value={army}>
@@ -77,6 +85,77 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       actions.updateAllegiance("Traitor", playerNumber);
     }
   };
+
+  //#region player2 group selection
+  const setPlayer2 = (id: string) => {
+    if (id === "") {
+      actions.updateName("", "player2");
+      actions.updateId(undefined, "player2");
+      return;
+    }
+
+    const name = members?.find((member) => member.id === id)?.name;
+    actions.updateName(name ?? "", "player2");
+    actions.updateId(id, "player2");
+  };
+
+  const player2GroupOptions = members?.map((member) => (
+    <option value={member.id} key={member.id}>
+      {member.name}
+    </option>
+  ));
+
+  const player2NameForm = (
+    <div className="flex flex-col items-center">
+      <label htmlFor="player2GroupSelect" className="text-2xl font-bold">
+        Play a group member:
+      </label>
+      <select
+        id="player2GroupSelect"
+        className="my-2 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
+        onChange={(e) => setPlayer2(e.target.value)}
+      >
+        <option value={""}>--</option>
+        {player2GroupOptions}
+      </select>
+      <button
+        onClick={() => setStart(true)}
+        className="rounded border border-solid border-blue-500 px-2 font-semibold text-blue-500 hover:bg-blue-500 hover:text-white"
+      >
+        Start
+      </button>
+    </div>
+  );
+
+  const showMembersDropdown =
+    playerNumber === "player2" && members?.length && members.length > 0;
+  //#endregion
+
+  const goToForm = () => {
+    actions.updateName(name, playerNumber);
+    setStart(true);
+  };
+
+  if (!player.name || (playerNumber === "player2" && !start))
+    return (
+      <div className="w-1/2 p-4 text-center">
+        {showMembersDropdown && player2NameForm}
+        <h1 className="text-2xl font-bold">
+          {showMembersDropdown && "Or,"} Enter your name:
+        </h1>
+        <input
+          type="text"
+          onChange={(e) => setName(e.target.value)}
+          className="mt-2 rounded-md border-gray-400 bg-gray-100 focus:bg-white"
+        />
+        <button
+          onClick={goToForm}
+          className="ml-1 rounded border border-solid border-blue-500 px-2 font-semibold text-blue-500 hover:bg-blue-500 hover:text-white"
+        >
+          Submit
+        </button>
+      </div>
+    );
 
   return (
     <div className="flex w-1/2 flex-col items-center p-4">
