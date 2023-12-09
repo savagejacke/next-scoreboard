@@ -5,5 +5,8 @@ export interface Player {
   army: string;
   secondaries: Secondary[];
   primaryScore: number;
+  allegiance?: Allegiance;
   id?: string;
 }
+
+export type Allegiance = "Loyalist" | "Traitor";

@@ -32,6 +32,33 @@ model GameResult {
   description    String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@index([player1Id])
+  @@index([player2Id])
+}
+
+model GameInProgress {
+  id                String  @id @default(cuid())
+  gameType          String
+  mission           String?
+  player1Name       String
+  player1Army       String
+  player1Score      Int
+  // TODO Secondary scores
+  player1Allegiance String?
+  player1           User?   @relation("activePlayer1", fields: [player1Id], references: [id])
+  player1Id         String?
+  player2Name       String
+  player2Army       String
+  player2Score      Int
+  // TODO Secondary scores
+  player2Allegiance String?
+  player2           User?   @relation("activePlayer2", fields: [player2Id], references: [id])
+  player2Id         String?
+  round             Int
+
+  @@index([player1Id])
+  @@index([player2Id])
 }
 
 model Group {
@@ -60,6 +87,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -68,22 +96,28 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {
-  id             String       @id @default(cuid())
+  id             String           @id @default(cuid())
   name           String?
-  email          String?      @unique
+  email          String?          @unique
   emailVerified  DateTime?
   image          String?
   accounts       Account[]
   sessions       Session[]
-  gamesAsPlayer1 GameResult[] @relation("player1")
-  gamesAsPlayer2 GameResult[] @relation("player2")
-  group          Group?       @relation("members", fields: [groupId], references: [id])
+  gamesAsPlayer1 GameResult[]     @relation("player1")
+  gamesAsPlayer2 GameResult[]     @relation("player2")
+  group          Group?           @relation("members", fields: [groupId], references: [id])
   groupId        String?
-  InvitedTo      Group[]      @relation("invites")
+  InvitedTo      Group[]          @relation("invites")
   adminOf        Group?
+  ActivePlayer1  GameInProgress[] @relation("activePlayer1")
+  ActivePlayer2  GameInProgress[] @relation("activePlayer2")
+
+  @@index([groupId])
 }
 
 model VerificationToken {

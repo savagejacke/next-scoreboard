@@ -8,7 +8,7 @@ const Nav: React.FC = () => {
 
   const authButton =
     session.status === "authenticated" ? (
-      <div className="flex flex-row items-center justify-between mx-4 my-2 text-xl text-gray-600">
+      <div className="mx-4 my-2 flex flex-row items-center justify-between text-xl text-gray-600">
         <button
           className="hover:text-black"
           onClick={() => router.push("/account")}
@@ -43,7 +43,7 @@ const Nav: React.FC = () => {
     );
 
   return (
-    <div className="flex flex-row justify-between px-8 mb-3 shadow-lg">
+    <div className="mb-3 flex flex-row justify-between px-8 shadow-lg">
       <div className="mx-5">
         <button
           className="mx-4 my-2 text-xl text-gray-600 hover:text-black"
