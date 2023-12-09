@@ -170,6 +170,9 @@ export const useGameStore = create<GameState>((set) => ({
       }));
     }
   },
+  updateGameType: (gameType: "40k 9th Edition" | "Horus Heresy") => {
+    set((state) => ({ ...state, gameType }));
+  },
 }));
 
 interface GameState {
@@ -192,6 +195,7 @@ interface GameState {
     allegiance: Allegiance | undefined,
     player: PlayerChange
   ) => void;
+  updateGameType: (gameType: "40k 9th Edition" | "Horus Heresy") => void;
 }
 
 export type PlayerChange = "player1" | "player2";

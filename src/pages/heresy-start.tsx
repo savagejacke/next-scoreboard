@@ -4,6 +4,7 @@ import { trpc } from "@/utils/trpc";
 import { type PlayerChange, useGameStore } from "@/zustand/zustand";
 import { type NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const HeresyStartPage: NextPage = () => {
@@ -222,5 +223,27 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
 };
 
 const ContinueButton: React.FC = () => {
-  return <button></button>;
+  const { player1, player2, updateGameType } = useGameStore((state) => ({
+    player1: state.player1,
+    player2: state.player2,
+    updateGameType: state.updateGameType,
+  }));
+  const { mutateAsync, isLoading } = trpc.game.startGame.useMutation();
+  const router = useRouter();
+
+  const onClick = async () => {
+    await mutateAsync({ gameType: "Horus Heresy", player1, player2 });
+    updateGameType("Horus Heresy");
+    router.push("/scoreboard");
+  };
+
+  return (
+    <button
+      className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+      disabled={isLoading}
+      onClick={onClick}
+    >
+      {isLoading ? "Starting..." : "Start Game"}
+    </button>
+  );
 };

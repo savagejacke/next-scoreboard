@@ -47,7 +47,7 @@ model GameInProgress {
   // TODO Secondary scores
   player1Allegiance String?
   player1           User?   @relation("activePlayer1", fields: [player1Id], references: [id])
-  player1Id         String?
+  player1Id         String? @unique
   player2Name       String
   player2Army       String
   player2Score      Int

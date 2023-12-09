@@ -87,4 +87,48 @@ export const gameRouter = router({
         },
       });
     }),
+  startGame: protectedProcedure
+    .input(
+      z.object({
+        gameType: z.string(),
+        mission: z.string().nullish(),
+        player1: z.object({
+          name: z.string(),
+          army: z.string(),
+          allegiance: z.string().nullish(),
+          id: z.string().nullish(),
+        }),
+        player2: z.object({
+          name: z.string(),
+          army: z.string(),
+          allegiance: z.string().nullish(),
+          id: z.string().nullish(),
+        }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const player1Id = input.player1.id ?? ctx.session.user.id;
+      const data = {
+        gameType: input.gameType,
+        mission: input.mission,
+        player1Name: input.player1.name,
+        player1Army: input.player1.army,
+        player1Score: 0,
+        player1Allegiance: input.player1.allegiance,
+        player1Id,
+        player2Name: input.player2.name,
+        player2Army: input.player2.army,
+        player2Score: 0,
+        player2Allegiance: input.player2.allegiance,
+        player2Id: input.player2.id,
+        round: 0,
+      };
+      return await ctx.prisma.gameInProgress.upsert({
+        where: {
+          player1Id,
+        },
+        update: data,
+        create: data,
+      });
+    }),
 });
