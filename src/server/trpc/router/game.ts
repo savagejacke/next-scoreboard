@@ -113,15 +113,12 @@ export const gameRouter = router({
         mission: input.mission,
         player1Name: input.player1.name,
         player1Army: input.player1.army,
-        player1Score: 0,
         player1Allegiance: input.player1.allegiance,
         player1Id,
         player2Name: input.player2.name,
         player2Army: input.player2.army,
-        player2Score: 0,
         player2Allegiance: input.player2.allegiance,
         player2Id: input.player2.id,
-        round: 0,
       };
       return await ctx.prisma.gameInProgress.upsert({
         where: {

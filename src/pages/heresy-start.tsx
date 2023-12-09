@@ -1,4 +1,5 @@
 import { ASTARTES_LEGIONS, HERESY_ARMIES } from "@/data/armies";
+import { HERESY_MISSIONS } from "@/data/missions";
 import type { Allegiance } from "@/models/player";
 import { trpc } from "@/utils/trpc";
 import { type PlayerChange, useGameStore } from "@/zustand/zustand";
@@ -10,7 +11,14 @@ import { useState } from "react";
 const HeresyStartPage: NextPage = () => {
   const { data: session, status } = useSession();
   const [guest, setGuest] = useState(false);
+  const [mission, setMission] = useState<string>();
   const updateName = useGameStore((state) => state.updateName);
+
+  const missionOptions = HERESY_MISSIONS.map((mission) => (
+    <option value={mission.name} key={mission.name}>
+      {mission.name}
+    </option>
+  ));
 
   if (status !== "authenticated" && !guest) {
     return (
@@ -32,15 +40,26 @@ const HeresyStartPage: NextPage = () => {
   }
 
   return (
-    <>
-      <div className="flex flex-row items-center justify-evenly">
+    <div className="flex h-full w-screen flex-col items-center p-8">
+      <label htmlFor="mission-select" className="text-2xl font-bold">
+        Select Mission:
+      </label>
+      <select
+        onChange={(e) => setMission(e.target.value)}
+        className="border border-solid bg-white text-center disabled:bg-gray-100"
+        id="mission-select"
+      >
+        <option value={undefined}>--</option>
+        {missionOptions}
+      </select>
+      <div className="flex w-full flex-row items-center justify-evenly">
         <FormComponent playerNumber="player1" />
         <FormComponent playerNumber="player2" />
       </div>
       <div className="p-4 text-center">
-        <ContinueButton />
+        <ContinueButton mission={mission} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -222,7 +241,9 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
   );
 };
 
-const ContinueButton: React.FC = () => {
+const ContinueButton: React.FC<{ mission: string | undefined }> = ({
+  mission,
+}) => {
   const { player1, player2, updateGameType } = useGameStore((state) => ({
     player1: state.player1,
     player2: state.player2,
@@ -232,7 +253,7 @@ const ContinueButton: React.FC = () => {
   const router = useRouter();
 
   const onClick = async () => {
-    await mutateAsync({ gameType: "Horus Heresy", player1, player2 });
+    await mutateAsync({ gameType: "Horus Heresy", player1, player2, mission });
     updateGameType("Horus Heresy");
     router.push("/scoreboard");
   };

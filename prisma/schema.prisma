@@ -38,24 +38,34 @@ model GameResult {
 }
 
 model GameInProgress {
-  id                String  @id @default(cuid())
-  gameType          String
-  mission           String?
-  player1Name       String
-  player1Army       String
-  player1Score      Int
-  // TODO Secondary scores
-  player1Allegiance String?
-  player1           User?   @relation("activePlayer1", fields: [player1Id], references: [id])
-  player1Id         String? @unique
-  player2Name       String
-  player2Army       String
-  player2Score      Int
-  // TODO Secondary scores
-  player2Allegiance String?
-  player2           User?   @relation("activePlayer2", fields: [player2Id], references: [id])
-  player2Id         String?
-  round             Int
+  id                     String  @id @default(cuid())
+  gameType               String
+  mission                String?
+  player1Name            String
+  player1Army            String
+  player1PrimaryScore    Int     @default(0)
+  player1SlayTheWarlord  Int     @default(0)
+  player1FirstBlood      Int     @default(0)
+  player1LastManStanding Int     @default(0)
+  player1Attrition       Int     @default(0)
+  player1Linebreaker     Int     @default(0)
+  player1PriceOfFailure  Int     @default(0)
+  player1Allegiance      String?
+  player1                User?   @relation("activePlayer1", fields: [player1Id], references: [id])
+  player1Id              String? @unique
+  player2Name            String
+  player2Army            String
+  player2PrimaryScore    Int     @default(0)
+  player2SlayTheWarlord  Int     @default(0)
+  player2FirstBlood      Int     @default(0)
+  player2LastManStanding Int     @default(0)
+  player2Attrition       Int     @default(0)
+  player2Linebreaker     Int     @default(0)
+  player2PriceOfFailure  Int     @default(0)
+  player2Allegiance      String?
+  player2                User?   @relation("activePlayer2", fields: [player2Id], references: [id])
+  player2Id              String?
+  round                  Int     @default(0)
 
   @@index([player1Id])
   @@index([player2Id])
