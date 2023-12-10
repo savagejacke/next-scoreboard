@@ -64,7 +64,7 @@ model GameInProgress {
   player2PriceOfFailure  Int     @default(0)
   player2Allegiance      String?
   player2                User?   @relation("activePlayer2", fields: [player2Id], references: [id])
-  player2Id              String?
+  player2Id              String? @unique
   round                  Int     @default(0)
 
   @@index([player1Id])

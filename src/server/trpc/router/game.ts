@@ -49,6 +49,16 @@ export const gameRouter = router({
       orderBy: { createdAt: "asc" },
     });
   }),
+  getActiveGame: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.gameInProgress.findFirst({
+      where: {
+        OR: [
+          { player1Id: ctx.session.user.id },
+          { player2Id: ctx.session.user.id },
+        ],
+      },
+    });
+  }),
   logGame: protectedProcedure
     .input(
       z.object({
@@ -126,6 +136,47 @@ export const gameRouter = router({
         },
         update: data,
         create: data,
+      });
+    }),
+  updateGame: protectedProcedure
+    .input(
+      z.object({
+        playerNumber: z.string(),
+        primary: z.number().nullish(),
+        slayTheWarlord: z.number().nullish(),
+        firstBlood: z.number().nullish(),
+        lastManStanding: z.number().nullish(),
+        attrition: z.number().nullish(),
+        linebreaker: z.number().nullish(),
+        priceOfFailure: z.number().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (input.playerNumber === "player1") {
+        return await ctx.prisma.gameInProgress.update({
+          where: { player1Id: ctx.session.user.id },
+          data: {
+            player1PrimaryScore: input.primary || undefined,
+            player1SlayTheWarlord: input.slayTheWarlord || undefined,
+            player1FirstBlood: input.firstBlood || undefined,
+            player1LastManStanding: input.lastManStanding || undefined,
+            player1Attrition: input.attrition || undefined,
+            player1Linebreaker: input.linebreaker || undefined,
+            player1PriceOfFailure: input.priceOfFailure || undefined,
+          },
+        });
+      }
+      return await ctx.prisma.gameInProgress.update({
+        where: { player2Id: ctx.session.user.id },
+        data: {
+          player2PrimaryScore: input.primary || undefined,
+          player2SlayTheWarlord: input.slayTheWarlord || undefined,
+          player2FirstBlood: input.firstBlood || undefined,
+          player2LastManStanding: input.lastManStanding || undefined,
+          player2Attrition: input.attrition || undefined,
+          player2Linebreaker: input.linebreaker || undefined,
+          player2PriceOfFailure: input.priceOfFailure || undefined,
+        },
       });
     }),
 });

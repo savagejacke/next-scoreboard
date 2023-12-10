@@ -11,7 +11,7 @@ const Home: NextPage = () => {
       </div>
       <div className="mt-3 flex-row">
         <button
-          onClick={() => router.push("/ninth-start")}
+          onClick={() => router.push("/heresy-start")}
           className="mr-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
         >
           Start Game

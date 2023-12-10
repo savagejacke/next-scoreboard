@@ -98,7 +98,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       return;
     }
     actions.updateArmy(newArmy, playerNumber);
-    if (newArmy === "Legio Custodes") {
+    if (newArmy === "Legio Custodes" || newArmy === "Sisters of Silence") {
       actions.updateAllegiance("Loyalist", playerNumber);
     }
     if (newArmy === "Daemons of the Ruinstorm") {
@@ -257,6 +257,30 @@ const ContinueButton: React.FC<{ mission: string | undefined }> = ({
     updateGameType("Horus Heresy");
     router.push("/scoreboard");
   };
+
+  const p1Ready = () => {
+    if (!player1.allegiance) return false;
+    if (!player1.army) return false;
+    if (!player1.name) return false;
+    return true;
+  };
+  const p2Ready = () => {
+    if (!player2.allegiance) return false;
+    if (!player2.army) return false;
+    if (!player2.name) return false;
+    return true;
+  };
+
+  if (!p1Ready() || !p2Ready()) {
+    return (
+      <button
+        className="btn rounded bg-green-500 px-4 py-2 font-bold text-white opacity-75 hover:bg-green-600"
+        disabled
+      >
+        Finish your selections
+      </button>
+    );
+  }
 
   return (
     <button

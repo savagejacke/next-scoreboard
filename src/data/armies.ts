@@ -31,6 +31,7 @@ export const HERESY_ARMIES = [
   "Solar Auxilia",
   "Knight Houses",
   "Daemons of the Ruinstorm",
+  "Sisters of Silence",
 ];
 
 export const SM_CHAPTERS = [
