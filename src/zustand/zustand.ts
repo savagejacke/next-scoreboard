@@ -1,4 +1,4 @@
-import { type Player } from "@/models/player";
+import type { Allegiance, Player } from "@/models/player";
 import type { SecondaryType, Secondary } from "@/models/secondary";
 import create from "zustand";
 
@@ -15,6 +15,7 @@ export const useGameStore = create<GameState>((set) => ({
     secondaries: [],
     primaryScore: 0,
   },
+  gameType: "40k 9th Edition",
   updatePrimaryScore: (primaryScore: number, player: PlayerChange) => {
     if (player === "player1") {
       set((state) => ({
@@ -155,11 +156,29 @@ export const useGameStore = create<GameState>((set) => ({
       });
     }
   },
+  updateAllegiance: (
+    allegiance: Allegiance | undefined,
+    player: PlayerChange
+  ) => {
+    if (player === "player1") {
+      set((state) => ({
+        player1: { ...state.player1, allegiance },
+      }));
+    } else {
+      set((state) => ({
+        player2: { ...state.player2, allegiance },
+      }));
+    }
+  },
+  updateGameType: (gameType: "40k 9th Edition" | "Horus Heresy") => {
+    set((state) => ({ ...state, gameType }));
+  },
 }));
 
 interface GameState {
   player1: Player;
   player2: Player;
+  gameType: "40k 9th Edition" | "Horus Heresy";
   updatePrimaryScore: (primaryScore: number, player: PlayerChange) => void;
   updateName: (name: string, player: PlayerChange) => void;
   updateArmy: (army: string, player: PlayerChange) => void;
@@ -172,6 +191,11 @@ interface GameState {
     player: PlayerChange
   ) => void;
   updateId: (id: string | undefined, player: PlayerChange) => void;
+  updateAllegiance: (
+    allegiance: Allegiance | undefined,
+    player: PlayerChange
+  ) => void;
+  updateGameType: (gameType: "40k 9th Edition" | "Horus Heresy") => void;
 }
 
 export type PlayerChange = "player1" | "player2";

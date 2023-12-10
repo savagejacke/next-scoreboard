@@ -23,7 +23,18 @@ export const ARMIES = [
   "Leagues of Votann",
 ] as const;
 
-export const CHAPTERS = [
+export const HERESY_ARMIES = [
+  "Legiones Astartes",
+  "Mechanicum",
+  "Legio Custodes",
+  "Imperialis Militia",
+  "Solar Auxilia",
+  "Knight Houses",
+  "Daemons of the Ruinstorm",
+  "Sisters of Silence",
+];
+
+export const SM_CHAPTERS = [
   "Black Templars",
   "Blood Angels",
   "Dark Angels",
@@ -37,7 +48,7 @@ export const CHAPTERS = [
   "White Scars",
 ];
 
-export const LEGIONS = [
+export const CSM_LEGIONS = [
   "Alpha Legion",
   "Black Legion",
   "Emperor's Children",
@@ -46,4 +57,25 @@ export const LEGIONS = [
   "Word Bearers",
   "Red Corsairs",
   "Creations of Bile",
+];
+
+export const ASTARTES_LEGIONS = [
+  "Dark Angels",
+  "Emperor's Children",
+  "Iron Warriors",
+  "Space Wolves",
+  "White Scars",
+  "Imperial Fists",
+  "Night Lords",
+  "Blood Angels",
+  "Iron Hands",
+  "World Eaters",
+  "Ultramarines",
+  "Death Guard",
+  "Thousand Sons",
+  "Sons of Horus",
+  "Word Bearers",
+  "Salamanders",
+  "Raven Guard",
+  "Alpha Legion",
 ];

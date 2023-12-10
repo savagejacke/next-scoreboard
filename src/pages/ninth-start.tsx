@@ -1,4 +1,4 @@
-import { ARMIES, CHAPTERS, LEGIONS } from "@/data/armies";
+import { ARMIES, SM_CHAPTERS, CSM_LEGIONS } from "@/data/armies";
 import { SECONDARIES } from "@/data/Secondaries";
 import type { Secondary, SecondaryType } from "@/models/secondary";
 import { trpc } from "@/utils/trpc";
@@ -139,7 +139,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
   //#endregion
 
   const onChapterChange = (chapter: string) => {
-    if (!CHAPTERS.includes(chapter))
+    if (!SM_CHAPTERS.includes(chapter))
       actions.updateArmy("Space Marines", playerNumber);
     else actions.updateArmy(`Space Marines-${chapter}`, playerNumber);
   };
@@ -152,7 +152,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
         className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
       >
         <option value="--">--</option>
-        {CHAPTERS.map((chap) => (
+        {SM_CHAPTERS.map((chap) => (
           <option value={chap} key={chap}>
             {chap}
           </option>
@@ -162,7 +162,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
   ) : null;
 
   const onLegionChange = (legion: string) => {
-    if (!LEGIONS.includes(legion))
+    if (!CSM_LEGIONS.includes(legion))
       actions.updateArmy("Chaos Marines", playerNumber);
     else actions.updateArmy(`Chaos Marines-${legion}`, playerNumber);
   };
@@ -175,7 +175,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
         className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
       >
         <option value="--">--</option>
-        {LEGIONS.map((legion) => (
+        {CSM_LEGIONS.map((legion) => (
           <option value={legion} key={legion}>
             {legion}
           </option>
