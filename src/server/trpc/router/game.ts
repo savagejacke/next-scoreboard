@@ -153,8 +153,13 @@ export const gameRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       if (input.playerNumber === "player1") {
-        return await ctx.prisma.gameInProgress.update({
-          where: { player1Id: ctx.session.user.id },
+        return await ctx.prisma.gameInProgress.updateMany({
+          where: {
+            OR: [
+              { player1Id: ctx.session.user.id },
+              { player2Id: ctx.session.user.id },
+            ],
+          },
           data: {
             player1PrimaryScore: input.primary || undefined,
             player1SlayTheWarlord: input.slayTheWarlord || undefined,
@@ -166,8 +171,13 @@ export const gameRouter = router({
           },
         });
       }
-      return await ctx.prisma.gameInProgress.update({
-        where: { player2Id: ctx.session.user.id },
+      return await ctx.prisma.gameInProgress.updateMany({
+        where: {
+          OR: [
+            { player1Id: ctx.session.user.id },
+            { player2Id: ctx.session.user.id },
+          ],
+        },
         data: {
           player2PrimaryScore: input.primary || undefined,
           player2SlayTheWarlord: input.slayTheWarlord || undefined,
@@ -179,4 +189,86 @@ export const gameRouter = router({
         },
       });
     }),
+  logGameInProgress: protectedProcedure
+    .input(z.object({ description: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const gameInProgress = await ctx.prisma.gameInProgress.findFirstOrThrow({
+        where: {
+          OR: [
+            { player1Id: ctx.session.user.id },
+            { player2Id: ctx.session.user.id },
+          ],
+        },
+      });
+      const player1Score =
+        gameInProgress.player1PrimaryScore +
+        gameInProgress.player1Attrition +
+        gameInProgress.player1FirstBlood +
+        gameInProgress.player1LastManStanding +
+        gameInProgress.player1Linebreaker +
+        gameInProgress.player1PriceOfFailure +
+        gameInProgress.player1SlayTheWarlord;
+      const player2Score =
+        gameInProgress.player2PrimaryScore +
+        gameInProgress.player2Attrition +
+        gameInProgress.player2FirstBlood +
+        gameInProgress.player2LastManStanding +
+        gameInProgress.player2Linebreaker +
+        gameInProgress.player2PriceOfFailure +
+        gameInProgress.player2SlayTheWarlord;
+      const res = await ctx.prisma.gameResult.create({
+        data: {
+          gameType: gameInProgress.gameType,
+          player1Name: gameInProgress.player1Name,
+          player1Army: gameInProgress.player1Army,
+          player1Score,
+          player1Id: gameInProgress.player1Id,
+          player2Name: gameInProgress.player2Name,
+          player2Army: gameInProgress.player2Army,
+          player2Score,
+          player2Id: gameInProgress.player2Id,
+          numberOfRounds: gameInProgress.round,
+          description: input.description,
+        },
+      });
+      await ctx.prisma.gameInProgress.deleteMany({
+        where: {
+          OR: [
+            { player1Id: ctx.session.user.id },
+            { player2Id: ctx.session.user.id },
+          ],
+        },
+      });
+      return res;
+    }),
+  progressRound: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.gameInProgress.updateMany({
+      where: {
+        OR: [
+          { player1Id: ctx.session.user.id },
+          { player2Id: ctx.session.user.id },
+        ],
+      },
+      data: {
+        round: {
+          increment: 1,
+        },
+      },
+    });
+  }),
+  regressRound: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.gameInProgress.updateMany({
+      where: {
+        OR: [
+          { player1Id: ctx.session.user.id },
+          { player2Id: ctx.session.user.id },
+        ],
+      },
+      data: {
+        round: {
+          decrement: 1,
+        },
+      },
+    });
+  }),
 });

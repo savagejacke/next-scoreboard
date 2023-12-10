@@ -7,48 +7,121 @@ import { HERESY_MISSIONS } from "@/data/missions";
 import { trpc } from "@/utils/trpc";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 const ScoreboardPage: NextPage = () => {
   const { status } = useSession();
+  const ctx = trpc.useContext();
   const { data: game, isLoading } = trpc.game.getActiveGame.useQuery();
+  const { mutateAsync: logGameAsync } =
+    trpc.game.logGameInProgress.useMutation();
+  const { mutate: progressRound } = trpc.game.progressRound.useMutation({
+    onMutate: async () => {
+      ctx.game.getActiveGame.setData(undefined, (oldData) => {
+        if (!oldData) return undefined;
+        return {
+          ...oldData,
+          round: oldData.round + 1,
+        };
+      });
+    },
+    onError: () => ctx.game.getActiveGame.invalidate(),
+    onSettled: () => ctx.game.getActiveGame.invalidate(),
+  });
+  const { mutate: regressRound } = trpc.game.regressRound.useMutation({
+    onMutate: async () => {
+      ctx.game.getActiveGame.setData(undefined, (oldData) => {
+        if (!oldData) return undefined;
+        return {
+          ...oldData,
+          round: oldData.round - 1,
+        };
+      });
+    },
+    onError: () => ctx.game.getActiveGame.invalidate(),
+    onSettled: () => ctx.game.getActiveGame.invalidate(),
+  });
+  const [description, setDescription] = useState("");
+  const router = useRouter();
+
   const mission = HERESY_MISSIONS.find(
     (mission) => mission.name === game?.mission
   );
+
+  const logGame = async () => {
+    await logGameAsync({ description });
+    router.push("/results");
+  };
+
+  const describe = "Enter a description for your game if you wish";
 
   if (game?.gameType === "Horus Heresy") {
     if (isLoading || !game) {
       return <div>Loading...</div>;
     }
     return (
-      <div className="flex w-screen flex-row items-center justify-around p-8">
-        <HeresyScoreboard
-          playerNumber="player1"
-          game={{
-            playerName: game.player1Name,
-            mission: mission ?? HERESY_MISSIONS[HERESY_MISSIONS.length - 1]!,
-            primary: game.player1PrimaryScore,
-            slayTheWarlord: game.player1SlayTheWarlord,
-            firstBlood: game.player1FirstBlood,
-            attrition: game.player1Attrition,
-            lastManStanding: game.player1LastManStanding,
-            linebreaker: game.player1Linebreaker,
-            priceOfFailure: game.player1PriceOfFailure,
-          }}
+      <div className="flex w-screen flex-col items-center space-y-2 p-8">
+        <div className="flex w-full flex-row items-center justify-around">
+          <HeresyScoreboard
+            playerNumber="player1"
+            game={{
+              playerName: game.player1Name,
+              mission: mission ?? HERESY_MISSIONS[HERESY_MISSIONS.length - 1]!,
+              primary: game.player1PrimaryScore,
+              slayTheWarlord: game.player1SlayTheWarlord,
+              firstBlood: game.player1FirstBlood,
+              attrition: game.player1Attrition,
+              lastManStanding: game.player1LastManStanding,
+              linebreaker: game.player1Linebreaker,
+              priceOfFailure: game.player1PriceOfFailure,
+            }}
+          />
+          <HeresyScoreboard
+            playerNumber="player2"
+            game={{
+              playerName: game.player2Name,
+              mission: mission ?? HERESY_MISSIONS[HERESY_MISSIONS.length - 1]!,
+              primary: game.player2PrimaryScore,
+              slayTheWarlord: game.player2SlayTheWarlord,
+              firstBlood: game.player2FirstBlood,
+              attrition: game.player2Attrition,
+              lastManStanding: game.player2LastManStanding,
+              linebreaker: game.player2Linebreaker,
+              priceOfFailure: game.player2PriceOfFailure,
+            }}
+          />
+        </div>
+        <div className="text-xl font-bold">Round {game.round}</div>
+        <div className="flex flex-row space-x-2">
+          <button
+            className="rounded bg-blue-500 px-2 py-1 font-bold text-white hover:bg-blue-700"
+            onClick={() => progressRound()}
+          >
+            Progress Round
+          </button>
+          {game.round > 1 && (
+            <button
+              className="rounded bg-red-500 px-2 py-1 font-bold text-white hover:bg-red-700"
+              onClick={() => regressRound()}
+            >
+              Regress Round
+            </button>
+          )}
+        </div>
+        <textarea
+          cols={50}
+          rows={3}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder={describe}
+          className="rounded-md border border-black bg-white p-1"
         />
-        <HeresyScoreboard
-          playerNumber="player2"
-          game={{
-            playerName: game.player2Name,
-            mission: mission ?? HERESY_MISSIONS[HERESY_MISSIONS.length - 1]!,
-            primary: game.player2PrimaryScore,
-            slayTheWarlord: game.player2SlayTheWarlord,
-            firstBlood: game.player2FirstBlood,
-            attrition: game.player2Attrition,
-            lastManStanding: game.player2LastManStanding,
-            linebreaker: game.player2Linebreaker,
-            priceOfFailure: game.player2PriceOfFailure,
-          }}
-        />
+        <button
+          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+          onClick={logGame}
+        >
+          Log game
+        </button>
       </div>
     );
   }

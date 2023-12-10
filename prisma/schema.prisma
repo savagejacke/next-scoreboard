@@ -65,7 +65,7 @@ model GameInProgress {
   player2Allegiance      String?
   player2                User?   @relation("activePlayer2", fields: [player2Id], references: [id])
   player2Id              String? @unique
-  round                  Int     @default(0)
+  round                  Int     @default(1)
 
   @@index([player1Id])
   @@index([player2Id])
