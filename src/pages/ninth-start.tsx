@@ -226,7 +226,9 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
   );
 
   const showMembersDropdown =
-    playerNumber === "player2" && members?.length && members.length > 0;
+    playerNumber === "player2" && members?.length && members.length > 0
+      ? true
+      : false;
   //#endregion
 
   const goToForm = () => {
