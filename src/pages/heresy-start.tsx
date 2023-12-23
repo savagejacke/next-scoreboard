@@ -1,5 +1,6 @@
 import { ASTARTES_LEGIONS, HERESY_ARMIES } from "@/data/armies";
 import { HERESY_MISSIONS } from "@/data/missions";
+import type { Mission } from "@/models/mission";
 import type { Allegiance } from "@/models/player";
 import { trpc } from "@/utils/trpc";
 import { type PlayerChange, useGameStore } from "@/zustand/zustand";
@@ -11,7 +12,7 @@ import { useState } from "react";
 const HeresyStartPage: NextPage = () => {
   const { data: session, status } = useSession();
   const [guest, setGuest] = useState(false);
-  const [mission, setMission] = useState<string>();
+  const [mission, setMission] = useState<Mission>();
   const updateName = useGameStore((state) => state.updateName);
 
   const missionOptions = HERESY_MISSIONS.map((mission) => (
@@ -45,7 +46,9 @@ const HeresyStartPage: NextPage = () => {
         Select Mission:
       </label>
       <select
-        onChange={(e) => setMission(e.target.value)}
+        onChange={(e) =>
+          setMission(HERESY_MISSIONS.find((m) => m.name === e.target.value))
+        }
         className="border border-solid bg-white text-center disabled:bg-gray-100"
         id="mission-select"
       >
@@ -243,7 +246,7 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
   );
 };
 
-const ContinueButton: React.FC<{ mission: string | undefined }> = ({
+const ContinueButton: React.FC<{ mission: Mission | undefined }> = ({
   mission,
 }) => {
   const { player1, player2, updateGameType } = useGameStore((state) => ({
@@ -255,6 +258,10 @@ const ContinueButton: React.FC<{ mission: string | undefined }> = ({
   const router = useRouter();
 
   const onClick = async () => {
+    if (!mission) {
+      alert("Select a mission");
+      return;
+    }
     await mutateAsync({ gameType: "Horus Heresy", player1, player2, mission });
     updateGameType("Horus Heresy");
     router.push("/scoreboard");

@@ -38,37 +38,41 @@ model GameResult {
 }
 
 model GameInProgress {
-  id                     String  @id @default(cuid())
-  gameType               String
-  mission                String?
-  player1Name            String
-  player1Army            String
-  player1PrimaryScore    Int     @default(0)
-  player1SlayTheWarlord  Int     @default(0)
-  player1FirstBlood      Int     @default(0)
-  player1LastManStanding Int     @default(0)
-  player1Attrition       Int     @default(0)
-  player1Linebreaker     Int     @default(0)
-  player1PriceOfFailure  Int     @default(0)
-  player1Allegiance      String?
-  player1                User?   @relation("activePlayer1", fields: [player1Id], references: [id])
-  player1Id              String? @unique
-  player2Name            String
-  player2Army            String
-  player2PrimaryScore    Int     @default(0)
-  player2SlayTheWarlord  Int     @default(0)
-  player2FirstBlood      Int     @default(0)
-  player2LastManStanding Int     @default(0)
-  player2Attrition       Int     @default(0)
-  player2Linebreaker     Int     @default(0)
-  player2PriceOfFailure  Int     @default(0)
-  player2Allegiance      String?
-  player2                User?   @relation("activePlayer2", fields: [player2Id], references: [id])
-  player2Id              String? @unique
-  round                  Int     @default(1)
+  id                  String            @id @default(cuid())
+  gameType            String
+  mission             String?
+  player1Name         String
+  player1Army         String
+  player1PrimaryScore Int               @default(0)
+  player1Secondaries  ActiveSecondary[] @relation("p1ActiveSecondary")
+  player1Allegiance   String?
+  player1             User?             @relation("activePlayer1", fields: [player1Id], references: [id])
+  player1Id           String?           @unique
+  player2Name         String
+  player2Army         String
+  player2PrimaryScore Int               @default(0)
+  player2Secondaries  ActiveSecondary[] @relation("p2ActiveSecondary")
+  player2Allegiance   String?
+  player2             User?             @relation("activePlayer2", fields: [player2Id], references: [id])
+  player2Id           String?           @unique
+  round               Int               @default(1)
 
   @@index([player1Id])
   @@index([player2Id])
+}
+
+model ActiveSecondary {
+  id        String          @id @default(cuid())
+  name      String
+  score     Int             @default(0)
+  completed Boolean         @default(false)
+  p1GameId  String?
+  p1Game    GameInProgress? @relation("p1ActiveSecondary", fields: [p1GameId], references: [id])
+  p2GameId  String?
+  p2Game    GameInProgress? @relation("p2ActiveSecondary", fields: [p2GameId], references: [id])
+
+  @@index([p1GameId])
+  @@index([p2GameId])
 }
 
 model Group {

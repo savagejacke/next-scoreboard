@@ -1,7 +1,7 @@
 export type Mission = {
   name: string;
   primary: { name: string; score: number }[];
-  secondaries: HeresySecondary[];
+  secondaries: { name: HeresySecondary; score: number }[];
 };
 
 type HeresySecondary =

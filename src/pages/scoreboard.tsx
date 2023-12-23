@@ -69,12 +69,7 @@ const ScoreboardPage: NextPage = () => {
               playerName: game.player1Name,
               mission: mission ?? HERESY_MISSIONS[HERESY_MISSIONS.length - 1]!,
               primary: game.player1PrimaryScore,
-              slayTheWarlord: game.player1SlayTheWarlord,
-              firstBlood: game.player1FirstBlood,
-              attrition: game.player1Attrition,
-              lastManStanding: game.player1LastManStanding,
-              linebreaker: game.player1Linebreaker,
-              priceOfFailure: game.player1PriceOfFailure,
+              secondaries: game.player1Secondaries,
             }}
           />
           <HeresyScoreboard
@@ -83,12 +78,7 @@ const ScoreboardPage: NextPage = () => {
               playerName: game.player2Name,
               mission: mission ?? HERESY_MISSIONS[HERESY_MISSIONS.length - 1]!,
               primary: game.player2PrimaryScore,
-              slayTheWarlord: game.player2SlayTheWarlord,
-              firstBlood: game.player2FirstBlood,
-              attrition: game.player2Attrition,
-              lastManStanding: game.player2LastManStanding,
-              linebreaker: game.player2Linebreaker,
-              priceOfFailure: game.player2PriceOfFailure,
+              secondaries: game.player2Secondaries,
             }}
           />
         </div>
