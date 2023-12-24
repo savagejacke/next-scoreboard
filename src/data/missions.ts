@@ -84,3 +84,15 @@ export const HERESY_MISSIONS: Mission[] = [
     ],
   },
 ];
+
+export const TENTH_MISSION = [
+  "Supply Drop",
+  "Sites of Power",
+  "Priority Targets",
+  "The Ritual",
+  "Deploy Servo-Skulls",
+  "Take and Hold",
+  "Purge the Foe",
+  "Vital Ground",
+  "Scorched Earth",
+];
