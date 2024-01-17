@@ -43,6 +43,7 @@ model GameInProgress {
   mission             String?
   player1Name         String
   player1Army         String
+  p1MissionType       String?
   player1PrimaryScore Int               @default(0)
   player1Secondaries  ActiveSecondary[] @relation("p1ActiveSecondary")
   player1Allegiance   String?
@@ -50,6 +51,7 @@ model GameInProgress {
   player1Id           String?           @unique
   player2Name         String
   player2Army         String
+  p2MissionType       String?
   player2PrimaryScore Int               @default(0)
   player2Secondaries  ActiveSecondary[] @relation("p2ActiveSecondary")
   player2Allegiance   String?

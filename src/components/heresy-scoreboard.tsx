@@ -2,7 +2,6 @@ import type { Mission } from "@/models/mission";
 import { trpc } from "@/utils/trpc";
 import type { PlayerChange } from "@/zustand/zustand";
 import type { ActiveSecondary } from "@prisma/client";
-import React from "react";
 
 const HeresyScoreboard: React.FC<{
   playerNumber: PlayerChange;

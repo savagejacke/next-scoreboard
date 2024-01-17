@@ -117,12 +117,14 @@ export const gameRouter = router({
         player1: z.object({
           name: z.string(),
           army: z.string(),
+          missionType: z.string().nullish(),
           allegiance: z.string().nullish(),
           id: z.string().nullish(),
         }),
         player2: z.object({
           name: z.string(),
           army: z.string(),
+          missionType: z.string().nullish(),
           allegiance: z.string().nullish(),
           id: z.string().nullish(),
         }),
@@ -135,6 +137,7 @@ export const gameRouter = router({
         mission: input.mission.name,
         player1Name: input.player1.name,
         player1Army: input.player1.army,
+        p1MissionType: input.player1.missionType,
         player1Allegiance: input.player1.allegiance,
         player1Id,
         player1Secondaries: {
@@ -142,6 +145,7 @@ export const gameRouter = router({
         },
         player2Name: input.player2.name,
         player2Army: input.player2.army,
+        p2MissionType: input.player2.missionType,
         player2Allegiance: input.player2.allegiance,
         player2Id: input.player2.id,
         player2Secondaries: {
@@ -276,4 +280,23 @@ export const gameRouter = router({
       },
     });
   }),
+  createNewSecondary: protectedProcedure
+    .input(z.object({ playerNumber: z.string(), name: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const gameInProgress = await ctx.prisma.gameInProgress.findFirstOrThrow({
+        where: {
+          OR: [
+            { player1Id: ctx.session.user.id },
+            { player2Id: ctx.session.user.id },
+          ],
+        },
+      });
+
+      const inputData =
+        input.playerNumber === "player1"
+          ? { name: input.name, p1GameId: gameInProgress.id }
+          : { name: input.name, p2GameId: gameInProgress.id };
+
+      return await ctx.prisma.activeSecondary.create({ data: inputData });
+    }),
 });
