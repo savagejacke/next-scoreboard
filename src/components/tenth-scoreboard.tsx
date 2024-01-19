@@ -80,8 +80,9 @@ const TenthScoreboard: React.FC<{
                 mutate({ id: sec.id, playerNumber, score: +e.target.value })
               }
               className="rounded-md border border-black bg-white text-center"
+              disabled={sec.completed}
             />
-            {game.missionType === "tactical" && (
+            {game.missionType === "tactical" && !sec.completed && (
               <button
                 className="rounded border border-solid border-blue-500 px-2 font-semibold text-blue-500 hover:bg-blue-500 hover:text-white"
                 onClick={() =>

@@ -190,7 +190,9 @@ export const gameRouter = router({
       }
       return await ctx.prisma.activeSecondary.update({
         where: { id: input.id },
-        data: { score: input.score },
+        data: input.completed
+          ? { score: input.score, completed: input.completed }
+          : { score: input.score },
       });
     }),
   logGameInProgress: protectedProcedure
