@@ -26,7 +26,7 @@ const HeresyScoreboard: React.FC<{
         }
         return {
           ...oldData,
-          player1Secondaries: oldData.player2Secondaries.map((sec) => {
+          player2Secondaries: oldData.player2Secondaries.map((sec) => {
             if (sec.id === update.id) {
               return { ...sec, score: update.score };
             }

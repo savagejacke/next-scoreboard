@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
+import type { ActiveSecondary } from "@prisma/client";
 
 export const gameRouter = router({
   getAllResults: publicProcedure.query(async ({ ctx }) => {
@@ -132,6 +133,32 @@ export const gameRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const player1Id = input.player1.id ?? ctx.session.user.id;
+      // Delete existing secondaries
+      const prevGames = await ctx.prisma.gameInProgress.findMany({
+        where: {
+          OR: [{ player1Id }, { player2Id: input.player2.id }],
+        },
+        include: {
+          player1Secondaries: true,
+          player2Secondaries: true,
+        },
+      });
+
+      if (prevGames.length > 0) {
+        const secIds = prevGames
+          .reduce(
+            (acc: ActiveSecondary[], game) =>
+              acc.concat(game.player1Secondaries, game.player2Secondaries),
+            []
+          )
+          .map((sec) => ({ id: sec.id }));
+        await ctx.prisma.activeSecondary.deleteMany({
+          where: {
+            OR: secIds,
+          },
+        });
+      }
+
       const data = {
         gameType: input.gameType,
         mission: input.mission.name,
@@ -139,6 +166,7 @@ export const gameRouter = router({
         player1Army: input.player1.army,
         p1MissionType: input.player1.missionType,
         player1Allegiance: input.player1.allegiance,
+        player1PrimaryScore: 0,
         player1Id,
         player1Secondaries: {
           create: input.mission.secondaries,
@@ -147,6 +175,7 @@ export const gameRouter = router({
         player2Army: input.player2.army,
         p2MissionType: input.player2.missionType,
         player2Allegiance: input.player2.allegiance,
+        player2PrimaryScore: 0,
         player2Id: input.player2.id,
         player2Secondaries: {
           create: input.mission.secondaries,

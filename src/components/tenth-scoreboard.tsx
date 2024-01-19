@@ -28,7 +28,7 @@ const TenthScoreboard: React.FC<{
         }
         return {
           ...oldData,
-          player1Secondaries: oldData.player2Secondaries.map((sec) => {
+          player2Secondaries: oldData.player2Secondaries.map((sec) => {
             if (sec.id === update.id) {
               return { ...sec, score: update.score };
             }
@@ -56,7 +56,7 @@ const TenthScoreboard: React.FC<{
     game.secondaries.reduce((prev, curr) => prev + curr.score, 0);
 
   return (
-    <div className="flex flex-col items-center space-y-2">
+    <div className="flex flex-col items-center space-y-2 self-start">
       <h1 className="text-4xl font-bold">{game.playerName}</h1>
       <h2 className="text-4xl font-bold">{score}</h2>
       <h2 className="text-2xl font-bold">Primary Objective:</h2>
@@ -70,7 +70,12 @@ const TenthScoreboard: React.FC<{
       />
       <h2 className="text-2xl font-bold">Secondary Objectives:</h2>
       {game.secondaries.map((sec) => (
-        <div className="flex flex-col space-y-1" key={sec.id}>
+        <div
+          className={
+            "flex flex-col space-y-1" + sec.completed ? " self-start" : ""
+          }
+          key={sec.id}
+        >
           <label className="text-xl">{sec.name}</label>
           <div className="flex flex-row space-x-1">
             <input
@@ -79,7 +84,7 @@ const TenthScoreboard: React.FC<{
               onChange={(e) =>
                 mutate({ id: sec.id, playerNumber, score: +e.target.value })
               }
-              className="rounded-md border border-black bg-white text-center"
+              className="rounded-md border border-black bg-white text-center disabled:border-gray-300 disabled:bg-gray-100"
               disabled={sec.completed}
             />
             {game.missionType === "tactical" && !sec.completed && (
