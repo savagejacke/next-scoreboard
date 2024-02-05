@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
+import type { ActiveSecondary } from "@prisma/client";
 
 export const gameRouter = router({
   getAllResults: publicProcedure.query(async ({ ctx }) => {
@@ -57,6 +58,10 @@ export const gameRouter = router({
           { player2Id: ctx.session.user.id },
         ],
       },
+      include: {
+        player1Secondaries: true,
+        player2Secondaries: true,
+      },
     });
   }),
   logGame: protectedProcedure
@@ -101,16 +106,26 @@ export const gameRouter = router({
     .input(
       z.object({
         gameType: z.string(),
-        mission: z.string().nullish(),
+        mission: z.object({
+          name: z.string(),
+          secondaries: z.array(
+            z.object({
+              name: z.string(),
+              score: z.number(),
+            })
+          ),
+        }),
         player1: z.object({
           name: z.string(),
           army: z.string(),
+          missionType: z.string().nullish(),
           allegiance: z.string().nullish(),
           id: z.string().nullish(),
         }),
         player2: z.object({
           name: z.string(),
           army: z.string(),
+          missionType: z.string().nullish(),
           allegiance: z.string().nullish(),
           id: z.string().nullish(),
         }),
@@ -118,17 +133,53 @@ export const gameRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const player1Id = input.player1.id ?? ctx.session.user.id;
+      // Delete existing secondaries
+      const prevGames = await ctx.prisma.gameInProgress.findMany({
+        where: {
+          OR: [{ player1Id }, { player2Id: input.player2.id }],
+        },
+        include: {
+          player1Secondaries: true,
+          player2Secondaries: true,
+        },
+      });
+
+      if (prevGames.length > 0) {
+        const secIds = prevGames
+          .reduce(
+            (acc: ActiveSecondary[], game) =>
+              acc.concat(game.player1Secondaries, game.player2Secondaries),
+            []
+          )
+          .map((sec) => ({ id: sec.id }));
+        await ctx.prisma.activeSecondary.deleteMany({
+          where: {
+            OR: secIds,
+          },
+        });
+      }
+
       const data = {
         gameType: input.gameType,
-        mission: input.mission,
+        mission: input.mission.name,
         player1Name: input.player1.name,
         player1Army: input.player1.army,
+        p1MissionType: input.player1.missionType,
         player1Allegiance: input.player1.allegiance,
+        player1PrimaryScore: 0,
         player1Id,
+        player1Secondaries: {
+          create: input.mission.secondaries,
+        },
         player2Name: input.player2.name,
         player2Army: input.player2.army,
+        p2MissionType: input.player2.missionType,
         player2Allegiance: input.player2.allegiance,
+        player2PrimaryScore: 0,
         player2Id: input.player2.id,
+        player2Secondaries: {
+          create: input.mission.secondaries,
+        },
       };
       return await ctx.prisma.gameInProgress.upsert({
         where: {
@@ -142,17 +193,13 @@ export const gameRouter = router({
     .input(
       z.object({
         playerNumber: z.string(),
-        primary: z.number().nullish(),
-        slayTheWarlord: z.number().nullish(),
-        firstBlood: z.number().nullish(),
-        lastManStanding: z.number().nullish(),
-        attrition: z.number().nullish(),
-        linebreaker: z.number().nullish(),
-        priceOfFailure: z.number().nullish(),
+        score: z.number(),
+        id: z.string(),
+        completed: z.boolean().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (input.playerNumber === "player1") {
+      if (input.id === "primary") {
         return await ctx.prisma.gameInProgress.updateMany({
           where: {
             OR: [
@@ -160,33 +207,21 @@ export const gameRouter = router({
               { player2Id: ctx.session.user.id },
             ],
           },
-          data: {
-            player1PrimaryScore: input.primary || undefined,
-            player1SlayTheWarlord: input.slayTheWarlord || undefined,
-            player1FirstBlood: input.firstBlood || undefined,
-            player1LastManStanding: input.lastManStanding || undefined,
-            player1Attrition: input.attrition || undefined,
-            player1Linebreaker: input.linebreaker || undefined,
-            player1PriceOfFailure: input.priceOfFailure || undefined,
-          },
+          data:
+            input.playerNumber === "player1"
+              ? {
+                  player1PrimaryScore: input.score,
+                }
+              : {
+                  player2PrimaryScore: input.score,
+                },
         });
       }
-      return await ctx.prisma.gameInProgress.updateMany({
-        where: {
-          OR: [
-            { player1Id: ctx.session.user.id },
-            { player2Id: ctx.session.user.id },
-          ],
-        },
-        data: {
-          player2PrimaryScore: input.primary || undefined,
-          player2SlayTheWarlord: input.slayTheWarlord || undefined,
-          player2FirstBlood: input.firstBlood || undefined,
-          player2LastManStanding: input.lastManStanding || undefined,
-          player2Attrition: input.attrition || undefined,
-          player2Linebreaker: input.linebreaker || undefined,
-          player2PriceOfFailure: input.priceOfFailure || undefined,
-        },
+      return await ctx.prisma.activeSecondary.update({
+        where: { id: input.id },
+        data: input.completed
+          ? { score: input.score, completed: input.completed }
+          : { score: input.score },
       });
     }),
   logGameInProgress: protectedProcedure
@@ -199,23 +234,23 @@ export const gameRouter = router({
             { player2Id: ctx.session.user.id },
           ],
         },
+        include: {
+          player1Secondaries: true,
+          player2Secondaries: true,
+        },
       });
       const player1Score =
         gameInProgress.player1PrimaryScore +
-        gameInProgress.player1Attrition +
-        gameInProgress.player1FirstBlood +
-        gameInProgress.player1LastManStanding +
-        gameInProgress.player1Linebreaker +
-        gameInProgress.player1PriceOfFailure +
-        gameInProgress.player1SlayTheWarlord;
+        gameInProgress.player1Secondaries.reduce(
+          (prev, curr) => prev + curr.score,
+          0
+        );
       const player2Score =
         gameInProgress.player2PrimaryScore +
-        gameInProgress.player2Attrition +
-        gameInProgress.player2FirstBlood +
-        gameInProgress.player2LastManStanding +
-        gameInProgress.player2Linebreaker +
-        gameInProgress.player2PriceOfFailure +
-        gameInProgress.player2SlayTheWarlord;
+        gameInProgress.player2Secondaries.reduce(
+          (prev, curr) => prev + curr.score,
+          0
+        );
       const res = await ctx.prisma.gameResult.create({
         data: {
           gameType: gameInProgress.gameType,
@@ -239,6 +274,11 @@ export const gameRouter = router({
           ],
         },
       });
+      for (const sec of gameInProgress.player1Secondaries.concat(
+        gameInProgress.player2Secondaries
+      )) {
+        await ctx.prisma.activeSecondary.delete({ where: { id: sec.id } });
+      }
       return res;
     }),
   progressRound: protectedProcedure.mutation(async ({ ctx }) => {
@@ -271,4 +311,23 @@ export const gameRouter = router({
       },
     });
   }),
+  createNewSecondary: protectedProcedure
+    .input(z.object({ playerNumber: z.string(), name: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const gameInProgress = await ctx.prisma.gameInProgress.findFirstOrThrow({
+        where: {
+          OR: [
+            { player1Id: ctx.session.user.id },
+            { player2Id: ctx.session.user.id },
+          ],
+        },
+      });
+
+      const inputData =
+        input.playerNumber === "player1"
+          ? { name: input.name, p1GameId: gameInProgress.id }
+          : { name: input.name, p2GameId: gameInProgress.id };
+
+      return await ctx.prisma.activeSecondary.create({ data: inputData });
+    }),
 });

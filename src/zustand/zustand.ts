@@ -170,7 +170,7 @@ export const useGameStore = create<GameState>((set) => ({
       }));
     }
   },
-  updateGameType: (gameType: "40k 9th Edition" | "Horus Heresy") => {
+  updateGameType: (gameType: GameType) => {
     set((state) => ({ ...state, gameType }));
   },
 }));
@@ -178,7 +178,7 @@ export const useGameStore = create<GameState>((set) => ({
 interface GameState {
   player1: Player;
   player2: Player;
-  gameType: "40k 9th Edition" | "Horus Heresy";
+  gameType: GameType;
   updatePrimaryScore: (primaryScore: number, player: PlayerChange) => void;
   updateName: (name: string, player: PlayerChange) => void;
   updateArmy: (army: string, player: PlayerChange) => void;
@@ -195,7 +195,9 @@ interface GameState {
     allegiance: Allegiance | undefined,
     player: PlayerChange
   ) => void;
-  updateGameType: (gameType: "40k 9th Edition" | "Horus Heresy") => void;
+  updateGameType: (gameType: GameType) => void;
 }
 
 export type PlayerChange = "player1" | "player2";
+
+type GameType = "40k 9th Edition" | "Horus Heresy" | "40k 10th Edition";

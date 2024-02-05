@@ -584,3 +584,22 @@ export const SECONDARIES: Secondary[] = [
     score: 0,
   },
 ];
+
+export const TENTH_SECONDARIES = [
+  { name: "No Prisoners", fixed: false },
+  { name: "Deploy Teleport Homer", fixed: true },
+  { name: "Overwhelming Force", fixed: false },
+  { name: "Defend Stronghold", fixed: false },
+  { name: "Investigate Signals", fixed: false },
+  { name: "Capture Enemy Outpost", fixed: false },
+  { name: "A Tempting Target", fixed: false },
+  { name: "Area Denial", fixed: false },
+  { name: "Secure No Man's Land", fixed: false },
+  { name: "Behind Enemy Lines", fixed: true },
+  { name: "Bring it Down", fixed: true },
+  { name: "Storm Hostile Objective", fixed: true },
+  { name: "Cleanse", fixed: true },
+  { name: "Engage on All Fronts", fixed: true },
+  { name: "Extend Battle Lines", fixed: false },
+  { name: "Assassination", fixed: true },
+];

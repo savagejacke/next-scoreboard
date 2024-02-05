@@ -1,7 +1,6 @@
-import { ASTARTES_LEGIONS, HERESY_ARMIES } from "@/data/armies";
-import { HERESY_MISSIONS } from "@/data/missions";
-import type { Mission } from "@/models/mission";
-import type { Allegiance } from "@/models/player";
+import { TENTH_SECONDARIES } from "@/data/Secondaries";
+import { ARMIES, CSM_LEGIONS, SM_CHAPTERS } from "@/data/armies";
+import { TENTH_MISSION } from "@/data/missions";
 import { trpc } from "@/utils/trpc";
 import { type PlayerChange, useGameStore } from "@/zustand/zustand";
 import { type NextPage } from "next";
@@ -9,15 +8,15 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-const HeresyStartPage: NextPage = () => {
+const TenthStartPage: NextPage = () => {
   const { data: session, status } = useSession();
   const [guest, setGuest] = useState(false);
-  const [mission, setMission] = useState<Mission>();
+  const [mission, setMission] = useState<string>();
   const updateName = useGameStore((state) => state.updateName);
 
-  const missionOptions = HERESY_MISSIONS.map((mission) => (
-    <option value={mission.name} key={mission.name}>
-      {mission.name}
+  const missionOptions = TENTH_MISSION.map((mission) => (
+    <option value={mission} key={mission}>
+      {mission}
     </option>
   ));
 
@@ -32,7 +31,7 @@ const HeresyStartPage: NextPage = () => {
           Sign in
         </button>
         <button className="hover:underline" onClick={() => setGuest(true)}>
-          or continue as guest (your game {"won't"} be logged)
+          or continue as guest (your game won&apos;t be logged)
         </button>
       </div>
     );
@@ -46,9 +45,7 @@ const HeresyStartPage: NextPage = () => {
         Select Mission:
       </label>
       <select
-        onChange={(e) =>
-          setMission(HERESY_MISSIONS.find((m) => m.name === e.target.value))
-        }
+        onChange={(e) => setMission(e.target.value)}
         className="border border-solid bg-white text-center disabled:bg-gray-100"
         id="mission-select"
       >
@@ -66,8 +63,6 @@ const HeresyStartPage: NextPage = () => {
   );
 };
 
-export default HeresyStartPage;
-
 const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
   playerNumber,
 }) => {
@@ -83,31 +78,22 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
   }));
   const [name, setName] = useState("");
   const [start, setStart] = useState(false);
+  const [missionType, setMissionType] = useState<"tactical" | "fixed">(
+    "tactical"
+  );
+  const [fixed1, setFixed1] = useState("");
+  const [fixed2, setFixed2] = useState("");
 
   const membersQuery = trpc.account.getGroupMembers.useQuery();
   const members = membersQuery.data?.filter(
     (member) => member.id !== session?.user?.id
   );
 
-  const armyOptions = HERESY_ARMIES.map((army) => (
+  const armyOptions = ARMIES.map((army) => (
     <option key={army} value={army}>
       {army}
     </option>
   ));
-
-  const onArmyChange = (newArmy: string) => {
-    if (newArmy === "--") {
-      actions.updateArmy("Legiones Astartes", playerNumber);
-      return;
-    }
-    actions.updateArmy(newArmy, playerNumber);
-    if (newArmy === "Legio Custodes" || newArmy === "Sisters of Silence") {
-      actions.updateAllegiance("Loyalist", playerNumber);
-    }
-    if (newArmy === "Daemons of the Ruinstorm") {
-      actions.updateAllegiance("Traitor", playerNumber);
-    }
-  };
 
   //#region player2 group selection
   const setPlayer2 = (id: string) => {
@@ -194,21 +180,38 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
       <select
         className="mb-2 ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
         id={`${player.name}-army`}
-        onChange={(e) => onArmyChange(e.target.value)}
+        onChange={(e) => actions.updateArmy(e.target.value, playerNumber)}
       >
         <option value="None">--</option>
         {armyOptions}
       </select>
-      {(player.army === "Legiones Astartes" ||
-        ASTARTES_LEGIONS.includes(player.army)) && (
+      {(player.army === "Space Marines" ||
+        SM_CHAPTERS.includes(player.army)) && (
         <div className="text-center">
-          <h2 className="text-2xl font-bold">Select Legion</h2>
+          <h2 className="text-2xl font-bold">Select Chapter</h2>
           <select
             onChange={(e) => actions.updateArmy(e.target.value, playerNumber)}
             className="ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
           >
-            <option value="--">--</option>
-            {ASTARTES_LEGIONS.map((legion) => (
+            <option value="Space Marines">--</option>
+            {SM_CHAPTERS.map((chapter) => (
+              <option value={chapter} key={chapter}>
+                {chapter}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      {(player.army === "Chaos Marines" ||
+        CSM_LEGIONS.includes(player.army)) && (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold">Select Legion</h2>
+          <select
+            onChange={(e) => actions.updateArmy(e.target.value, playerNumber)}
+            className="border border-solid bg-white text-center disabled:bg-gray-100"
+          >
+            <option value="Chaos Marines">--</option>
+            {CSM_LEGIONS.map((legion) => (
               <option value={legion} key={legion}>
                 {legion}
               </option>
@@ -216,37 +219,51 @@ const FormComponent: React.FC<{ playerNumber: PlayerChange }> = ({
           </select>
         </div>
       )}
-      <label
-        className="text-2xl font-bold"
-        htmlFor={`${playerNumber}-allegiance`}
-      >
-        Select Allegiance
-      </label>
-      <select
-        className="mb-2 ml-1 flex-row border border-solid bg-white text-center disabled:bg-gray-100"
-        onChange={(e) =>
-          actions.updateAllegiance(
-            e.target.value === "--"
-              ? undefined
-              : (e.target.value as Allegiance),
-            playerNumber
-          )
-        }
-        value={player.allegiance ?? "--"}
-        disabled={
-          player.army === "Daemons of the Ruinstorm" ||
-          player.army === "Legio Custodes"
-        }
-      >
-        <option value="--">--</option>
-        <option value="Loyalist">Loyalist</option>
-        <option value="Traitor">Traitor</option>
-      </select>
+      <div className="flex flex-row items-center justify-center space-x-2">
+        <label>Fixed Missions</label>
+        <input
+          type="checkbox"
+          checked={missionType === "fixed"}
+          onChange={() =>
+            setMissionType(missionType === "tactical" ? "fixed" : "tactical")
+          }
+        />
+      </div>
+      {missionType === "fixed" && (
+        <div className="flex flex-row items-center justify-around space-x-2">
+          <select
+            className="border border-solid bg-white text-center disabled:bg-gray-100"
+            onChange={(e) => setFixed1(e.target.value)}
+          >
+            <option value="">--</option>
+            {TENTH_SECONDARIES.filter(
+              (sec) => sec.fixed && sec.name !== fixed2
+            ).map((sec) => (
+              <option value={sec.name} key={sec.name}>
+                {sec.name}
+              </option>
+            ))}
+          </select>
+          <select
+            className="border border-solid bg-white text-center disabled:bg-gray-100"
+            onChange={(e) => setFixed2(e.target.value)}
+          >
+            <option value="">--</option>
+            {TENTH_SECONDARIES.filter(
+              (sec) => sec.fixed && sec.name !== fixed1
+            ).map((sec) => (
+              <option value={sec.name} key={sec.name}>
+                {sec.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </div>
   );
 };
 
-const ContinueButton: React.FC<{ mission: Mission | undefined }> = ({
+const ContinueButton: React.FC<{ mission: string | undefined }> = ({
   mission,
 }) => {
   const { player1, player2, updateGameType } = useGameStore((state) => ({
@@ -262,25 +279,33 @@ const ContinueButton: React.FC<{ mission: Mission | undefined }> = ({
       alert("Select a mission");
       return;
     }
-    await mutateAsync({ gameType: "Horus Heresy", player1, player2, mission });
-    updateGameType("Horus Heresy");
+    if (!p1Ready() || !p2Ready()) {
+      alert("Finish your selections");
+      return;
+    }
+
+    await mutateAsync({
+      gameType: "40k 10th Edition",
+      player1,
+      player2,
+      mission: { name: mission, secondaries: [] },
+    });
+    updateGameType("40k 10th Edition");
     router.push("/scoreboard");
   };
 
   const p1Ready = () => {
-    if (!player1.allegiance) return false;
-    if (!player1.army) return false;
+    if (!player1.army || player1.army === "None") return false;
     if (!player1.name) return false;
     return true;
   };
   const p2Ready = () => {
-    if (!player2.allegiance) return false;
-    if (!player2.army) return false;
+    if (!player2.army || player2.army === "None") return false;
     if (!player2.name) return false;
     return true;
   };
 
-  if (!p1Ready() || !p2Ready()) {
+  if (!p1Ready() || !p2Ready() || !mission) {
     return (
       <button
         className="btn rounded bg-green-500 px-4 py-2 font-bold text-white opacity-75 hover:bg-green-600"
@@ -301,3 +326,5 @@ const ContinueButton: React.FC<{ mission: Mission | undefined }> = ({
     </button>
   );
 };
+
+export default TenthStartPage;

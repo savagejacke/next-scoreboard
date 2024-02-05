@@ -12,9 +12,9 @@ export const HERESY_MISSIONS: Mission[] = [
       { name: "Primarch", score: 0 },
     ],
     secondaries: [
-      "Slay the Warlord",
-      "Last Man Standing",
-      "The Price of Failure",
+      { name: "Slay the Warlord", score: 0 },
+      { name: "Last Man Standing", score: 0 },
+      { name: "The Price of Failure", score: 0 },
     ],
   },
   {
@@ -23,17 +23,29 @@ export const HERESY_MISSIONS: Mission[] = [
       { name: "Onslaught Attack", score: 0 },
       { name: "Seize the Onslaught Objectives", score: 0 },
     ],
-    secondaries: ["Slay the Warlord", "Attrition", "The Price of Failure"],
+    secondaries: [
+      { name: "Slay the Warlord", score: 0 },
+      { name: "Attrition", score: 0 },
+      { name: "The Price of Failure", score: 0 },
+    ],
   },
   {
     name: "Shatter Strike",
     primary: [{ name: "Shatter Strike", score: 0 }],
-    secondaries: ["Slay the Warlord", "Attrition", "The Price of Failure"],
+    secondaries: [
+      { name: "Slay the Warlord", score: 0 },
+      { name: "Attrition", score: 0 },
+      { name: "The Price of Failure", score: 0 },
+    ],
   },
   {
     name: "Dominion",
     primary: [{ name: "Dominion Objectives", score: 0 }],
-    secondaries: ["Slay the Warlord", "Attrition", "The Price of Failure"],
+    secondaries: [
+      { name: "Slay the Warlord", score: 0 },
+      { name: "Attrition", score: 0 },
+      { name: "The Price of Failure", score: 0 },
+    ],
   },
   {
     name: "Tide of Carnage",
@@ -43,9 +55,9 @@ export const HERESY_MISSIONS: Mission[] = [
       { name: "Opposing player's Deployment Zone", score: 0 },
     ],
     secondaries: [
-      "Slay the Warlord",
-      "Last Man Standing",
-      "The Price of Failure",
+      { name: "Slay the Warlord", score: 0 },
+      { name: "Last Man Standing", score: 0 },
+      { name: "The Price of Failure", score: 0 },
     ],
   },
   {
@@ -54,18 +66,33 @@ export const HERESY_MISSIONS: Mission[] = [
       { name: "Death Toll", score: 0 },
       { name: "War of Lies", score: 0 },
     ],
-    secondaries: ["Slay the Warlord", "The Price of Failure"],
+    secondaries: [
+      { name: "Slay the Warlord", score: 0 },
+      { name: "The Price of Failure", score: 0 },
+    ],
   },
   {
     name: "CUSTOM MISSION",
     primary: [{ name: "Primary Objective(s)", score: 0 }],
     secondaries: [
-      "Attrition",
-      "First Blood",
-      "Last Man Standing",
-      "Linebreaker",
-      "Slay the Warlord",
-      "The Price of Failure",
+      { name: "Attrition", score: 0 },
+      { name: "First Blood", score: 0 },
+      { name: "Last Man Standing", score: 0 },
+      { name: "Linebreaker", score: 0 },
+      { name: "Slay the Warlord", score: 0 },
+      { name: "The Price of Failure", score: 0 },
     ],
   },
+];
+
+export const TENTH_MISSION = [
+  "Supply Drop",
+  "Sites of Power",
+  "Priority Targets",
+  "The Ritual",
+  "Deploy Servo-Skulls",
+  "Take and Hold",
+  "Purge the Foe",
+  "Vital Ground",
+  "Scorched Earth",
 ];
